@@ -250,6 +250,9 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     try:
         add_repo(repo_type)
         
+        # Remove rpcbind first to prevent dependency issues
+        remove_rpcbind()
+        
         # Show installation progress
         print(f"{CYAN}{BOLD}[*] Installing packages: {', '.join(packages)}{NORMAL}")
         
@@ -270,7 +273,19 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
         print(f"{RED}{BOLD}[!] Error: Installation failed - {e}{NORMAL}")
     
     finally:
-        remove_repo(repo_type)
+        # Don't call remove_rpcbind() here again since we already did it above
+        # Just remove the repo
+        if repo_type == "kali" and os.path.exists("/etc/apt/sources.list.d/kali.list"):
+            os.remove("/etc/apt/sources.list.d/kali.list")
+        elif repo_type == "backports" and os.path.exists("/etc/apt/sources.list.d/backports.list"):
+            os.remove("/etc/apt/sources.list.d/backports.list")
+        
+        # Update apt cache
+        try:
+            subprocess.run(["apt-get", "update"], check=True)
+            print(f"{GREEN}{BOLD}[+] Repository removed and package list updated.{NORMAL}")
+        except subprocess.CalledProcessError:
+            print(f"{YELLOW}{BOLD}[!] Warning: Cleanup incomplete. You may need to manually fix your repositories.{NORMAL}")
 
 def display_menu():
     """Display the menu with dramatic styling."""
