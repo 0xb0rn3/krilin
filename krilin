@@ -34,12 +34,12 @@ VERSION = "0.2 Stable"
 
 # Categories including tools and kernels
 CATEGORIES = {
-    "1": ("Information Gathering", ["nmap", "dnsrecon", "theharvester", "recon-ng"], False, "kali"),
-    "2": ("Vulnerability Analysis", ["nikto", "sqlmap", "lynis"], False, "kali"),
-    "3": ("Exploitation Tools", ["metasploit-framework", "exploitdb", "set"], False, "kali"),
-    "4": ("Wireless Attacks", ["aircrack-ng", "reaver", "wifite", "kismet"], False, "kali"),
-    "5": ("Web Application Analysis", ["burpsuite", "zaproxy", "wfuzz", "dirb"], False, "kali"),
-    "6": ("Password Attacks", ["hydra", "john", "hashcat", "crunch", "wordlists"], False, "kali"),
+    "1": ("Information Gathering", ["nmap", "kali-menu", "dnsrecon", "theharvester", "recon-ng"], False, "kali"),
+    "2": ("Vulnerability Analysis", ["nikto", "kali-menu", "sqlmap", "lynis"], False, "kali"),
+    "3": ("Exploitation Tools", ["metasploit-framework", "kali-menu", "exploitdb", "set"], False, "kali"),
+    "4": ("Wireless Attacks", ["aircrack-ng", "kali-menu", "reaver", "wifite", "kismet"], False, "kali"),
+    "5": ("Web Application Analysis", ["burpsuite", "kali-menu", "zaproxy", "wfuzz", "dirb"], False, "kali"),
+    "6": ("Password Attacks", ["hydra", "john", "kali-menu", "hashcat", "crunch", "wordlists"], False, "kali"),
     "7": ("Individual Kali Tools", [], False, "kali"),  # Will prompt for specific tools
     "8": ("Debian Backports Kernel", ["linux-image-amd64"], True, "backports"),
     "9": ("Kali Linux Kernel", ["linux-image-amd64"], True, "kali"),
