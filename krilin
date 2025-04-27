@@ -8,6 +8,8 @@ import time
 import re
 import tempfile
 import shutil
+import requests
+from bs4 import BeautifulSoup
 
 # Color and style codes for dramatic vibe
 RED = '\033[91m'
@@ -24,8 +26,11 @@ NORMAL = '\033[0m'
 # Kali repository URL
 KALI_REPO = "deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware"
 
+# Kali tools list URL
+KALI_TOOLS_URL = "https://www.kali.org/tools/all-tools/"
+
 # Version info
-VERSION = "0.4"
+VERSION = "0.2 Stable"
 
 # Categories including tools and kernels
 CATEGORIES = {
@@ -37,7 +42,8 @@ CATEGORIES = {
     "6": ("Password Attacks", ["hydra", "john", "hashcat", "crunch", "wordlists"], False, "kali"),
     "7": ("Individual Kali Tools", [], False, "kali"),  # Will prompt for specific tools
     "8": ("Debian Backports Kernel", ["linux-image-amd64"], True, "backports"),
-    "9": ("Kali Linux Kernel", ["linux-image-amd64"], True, "kali")
+    "9": ("Kali Linux Kernel", ["linux-image-amd64"], True, "kali"),
+    "10": ("All Kali Hacking Tools", [], False, "kali")  # New option for all tools
 }
 
 def dramatic_print(text, color=GREEN, delay=0.01):
@@ -330,6 +336,228 @@ def select_specific_tools():
         print(f"{RED}{BOLD}[!] No tools specified. Returning to menu.{NORMAL}")
         return []
 
+def fetch_all_kali_tools():
+    """Fetch all available Kali tools from the website."""
+    print(f"{CYAN}{BOLD}[*] Fetching list of all Kali tools from {KALI_TOOLS_URL}...{NORMAL}")
+    
+    try:
+        # Check if requests and BeautifulSoup are available
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+        except ImportError:
+            print(f"{YELLOW}{BOLD}[!] Required libraries not found. Installing...{NORMAL}")
+            subprocess.run(["apt-get", "install", "-y", "python3-requests", "python3-bs4"], check=True)
+            import requests
+            from bs4 import BeautifulSoup
+        
+        # Fetch the webpage content
+        response = requests.get(KALI_TOOLS_URL)
+        if response.status_code != 200:
+            print(f"{RED}{BOLD}[!] Failed to fetch the tools list from website. HTTP status: {response.status_code}{NORMAL}")
+            return []
+        
+        # Parse the HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Find all tool links - looking for links to tool pages
+        tool_packages = []
+        
+        # Find the table containing the tools list
+        tools_table = soup.find('table', class_='contenttable')
+        if tools_table:
+            # Process each row in the table
+            rows = tools_table.find_all('tr')
+            for row in rows:
+                # Skip the header row
+                if row.find('th'):
+                    continue
+                
+                # Find the package name column
+                cells = row.find_all('td')
+                if len(cells) >= 2:  # At least 2 columns for name and package
+                    # The second column usually contains the package name
+                    package_name = cells[1].text.strip()
+                    if package_name and package_name != "N/A":
+                        tool_packages.append(package_name)
+        
+        # If we didn't find tools in the expected format, try an alternative approach
+        if not tool_packages:
+            # Look for all links to tool pages
+            for link in soup.find_all('a'):
+                href = link.get('href', '')
+                if '/tools/' in href and href.endswith('/'):
+                    # Extract the package name from the URL
+                    package_name = href.split('/')[-2]
+                    if package_name and package_name not in tool_packages:
+                        tool_packages.append(package_name)
+        
+        print(f"{GREEN}{BOLD}[+] Found {len(tool_packages)} Kali tools.{NORMAL}")
+        
+        return tool_packages
+        
+    except Exception as e:
+        print(f"{RED}{BOLD}[!] Error fetching Kali tools list: {e}{NORMAL}")
+        print(f"{YELLOW}{BOLD}[!] Falling back to apt-cache method...{NORMAL}")
+        return fetch_kali_tools_from_apt()
+
+def fetch_kali_tools_from_apt():
+    """Alternative method to get Kali tools using apt-cache after adding the repository."""
+    print(f"{CYAN}{BOLD}[*] Fetching Kali tools from repository...{NORMAL}")
+    
+    try:
+        # First add the Kali repository temporarily
+        add_repo("kali")
+        
+        # Use apt-cache to search for metapackages containing "kali-"
+        cmd = ["apt-cache", "search", "kali-"]
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        
+        # Parse the output to get package names
+        kali_tools = []
+        for line in result.stdout.split("\n"):
+            if line.strip():
+                # Extract package name (first part before the dash)
+                package_name = line.split(" - ")[0].strip()
+                if package_name.startswith("kali-") or "tools" in package_name:
+                    kali_tools.append(package_name)
+        
+        # Also add some common individual tools not in meta-packages
+        common_tools = [
+            "nmap", "dirb", "nikto", "sqlmap", "hydra", "john", "hashcat", 
+            "metasploit-framework", "burpsuite", "wireshark", "aircrack-ng",
+            "exploitdb", "recon-ng", "wfuzz", "wpscan", "lynis", "crackmapexec"
+        ]
+        kali_tools.extend(common_tools)
+        
+        # Remove duplicates
+        kali_tools = list(set(kali_tools))
+        
+        print(f"{GREEN}{BOLD}[+] Found {len(kali_tools)} Kali tools and metapackages.{NORMAL}")
+        return kali_tools
+    
+    except Exception as e:
+        print(f"{RED}{BOLD}[!] Error fetching Kali tools from repository: {e}{NORMAL}")
+        # Return a minimal default set of tools
+        print(f"{YELLOW}{BOLD}[!] Using minimal default tool set.{NORMAL}")
+        return [
+            "kali-tools-top10", "kali-linux-default", "nmap", "dirb", "nikto", 
+            "sqlmap", "hydra", "john", "metasploit-framework", "burpsuite"
+        ]
+
+def install_all_kali_tools():
+    """Install all available Kali tools."""
+    print(f"{MAGENTA}{BOLD}[*] Preparing to install all Kali hacking tools...{NORMAL}")
+    
+    # Fetch the list of all tools
+    tool_packages = fetch_all_kali_tools()
+    
+    if not tool_packages:
+        print(f"{RED}{BOLD}[!] Could not retrieve the list of Kali tools. Aborting.{NORMAL}")
+        return
+    
+    # Show the number of tools to be installed
+    print(f"{CYAN}{BOLD}[*] Found {len(tool_packages)} tools to install.{NORMAL}")
+    
+    # Warn about disk space and time
+    print(f"{YELLOW}{BOLD}[!] WARNING: Installing all tools will require significant disk space (10+ GB){NORMAL}")
+    print(f"{YELLOW}{BOLD}[!] and may take several hours to complete.{NORMAL}")
+    
+    # Confirm installation
+    confirmation = input(f"{BOLD}{RED}[?] Are you sure you want to install ALL Kali tools? (y/n):{NORMAL} ").lower()
+    if confirmation != 'y':
+        print(f"{YELLOW}{BOLD}[!] All tools installation cancelled.{NORMAL}")
+        return
+    
+    # Offer to install in batches
+    batch_option = input(f"{BOLD}{YELLOW}[?] Install in batches of 10 tools (recommended) or all at once? (b/a):{NORMAL} ").lower()
+    
+    try:
+        # Proactively handle rpcbind before adding repositories
+        proactively_remove_rpcbind()
+        create_apt_preferences()
+        
+        # Add Kali repository
+        add_repo("kali")
+        fix_dpkg_issues()
+        
+        # First try to install metapackages if available
+        metapackages = [pkg for pkg in tool_packages if pkg.startswith("kali-")]
+        if metapackages:
+            print(f"{CYAN}{BOLD}[*] First installing meta-packages...{NORMAL}")
+            for meta in metapackages:
+                try:
+                    print(f"{CYAN}[*] Installing {meta}...{NORMAL}")
+                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', meta], check=True, timeout=300)
+                    print(f"{GREEN}[+] Successfully installed {meta}{NORMAL}")
+                except Exception as e:
+                    print(f"{YELLOW}[!] Failed to install {meta}: {e}{NORMAL}")
+        
+        # Install individual tools
+        individual_tools = [pkg for pkg in tool_packages if not pkg.startswith("kali-")]
+        failed_packages = []
+        
+        if batch_option == 'b':
+            # Install in batches of 10
+            batch_size = 10
+            total_batches = (len(individual_tools) + batch_size - 1) // batch_size
+            
+            for i in range(0, len(individual_tools), batch_size):
+                batch = individual_tools[i:i+batch_size]
+                batch_num = i // batch_size + 1
+                
+                print(f"{CYAN}{BOLD}[*] Installing batch {batch_num}/{total_batches}: {', '.join(batch)}{NORMAL}")
+                
+                try:
+                    # Install the batch with a timeout (10 minutes per batch)
+                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends'] + batch, check=True, timeout=600)
+                    print(f"{GREEN}[+] Successfully installed batch {batch_num}{NORMAL}")
+                except Exception as e:
+                    print(f"{RED}[!] Error in batch {batch_num}: {e}{NORMAL}")
+                    # Try installing one by one if batch fails
+                    for package in batch:
+                        try:
+                            print(f"{CYAN}[*] Retry: Installing {package}...{NORMAL}")
+                            subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', package], check=True, timeout=300)
+                            print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
+                        except Exception as e:
+                            print(f"{RED}[!] Failed to install {package}: {e}{NORMAL}")
+                            failed_packages.append(package)
+                
+                # Fix any issues after each batch
+                fix_dpkg_issues()
+        else:
+            # Install all at once (not recommended for large numbers of packages)
+            for package in individual_tools:
+                try:
+                    print(f"{CYAN}[*] Installing {package}...{NORMAL}")
+                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', package], check=True, timeout=300)
+                    print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
+                except Exception as e:
+                    print(f"{RED}[!] Failed to install {package}: {e}{NORMAL}")
+                    failed_packages.append(package)
+                    # Try to fix broken packages after each failure
+                    fix_dpkg_issues()
+        
+        if failed_packages:
+            print(f"{YELLOW}{BOLD}[!] The following packages failed to install: {', '.join(failed_packages)}{NORMAL}")
+            # Save failed packages to a file for reference
+            with open("/tmp/krilin_failed_packages.txt", "w") as f:
+                f.write("\n".join(failed_packages))
+            print(f"{YELLOW}[*] Failed packages list saved to /tmp/krilin_failed_packages.txt{NORMAL}")
+        else:
+            print(f"{GREEN}{BOLD}[+] All packages successfully installed. Your complete arsenal is ready.{NORMAL}")
+    
+    except Exception as e:
+        print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
+    
+    finally:
+        # Fix any remaining package issues
+        fix_dpkg_issues()
+        
+        # Remove the repo
+        remove_repo("kali")
+
 def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     """Install selected tools or kernel with dramatic flair."""
     weapons = ["arsenal", "weaponry", "armaments", "firepower", "ordnance"]
@@ -338,8 +566,13 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     chosen_weapon = random.choice(weapons)
     power_word = random.choice(power_words)
     
-    # For category 7, prompt for specific tools
-    if category == "Individual Kali Tools" and not packages:
+    # Special handling for different categories
+    if category == "All Kali Hacking Tools":
+        # For category 10, call dedicated function
+        install_all_kali_tools()
+        return
+    elif category == "Individual Kali Tools" and not packages:
+        # For category 7, prompt for specific tools
         packages = select_specific_tools()
         if not packages:
             return
@@ -412,16 +645,35 @@ def display_menu():
     for key, (category, _, is_kernel, _) in CATEGORIES.items():
         if is_kernel and key == "9":
             print(f"{BOLD}{RED}[{key}] {category} {RED}(Warning: may cause instability on Debian){NORMAL}")
+        elif key == "10":
+            print(f"{BOLD}{MAGENTA}[{key}] {category} {MAGENTA}(Warning: large download, 10+ GB){NORMAL}")
         else:
             print(f"{BOLD}{CYAN}[{key}] {category}{NORMAL}")
     
     print(f"{BOLD}{YELLOW}[0] Exit{NORMAL}")
+
+def check_required_packages():
+    """Check and install required packages for Krilin."""
+    required_packages = ["python3-requests", "python3-bs4", "wget", "apt-transport-https", "gnupg"]
+    
+    for pkg in required_packages:
+        try:
+            subprocess.run(["dpkg", "-s", pkg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        except Exception:
+            print(f"{YELLOW}{BOLD}[!] Required package {pkg} not found. Installing...{NORMAL}")
+            try:
+                subprocess.run(["apt-get", "install", "-y", pkg], check=True)
+            except Exception as e:
+                print(f"{RED}{BOLD}[!] Failed to install {pkg}: {e}{NORMAL}")
 
 def main():
     """Main function to run the Krilin tool."""
     check_root()
     display_banner()
     detect_system()
+    
+    # Check for required packages
+    check_required_packages()
     
     # Fix any existing package issues
     fix_dpkg_issues()
@@ -432,7 +684,7 @@ def main():
     
     while True:
         display_menu()
-        choice = input(f"\n{BOLD}{GREEN}[?] Select an option (0-9):{NORMAL} ").strip()
+        choice = input(f"\n{BOLD}{GREEN}[?] Select an option (0-{len(CATEGORIES)}):{NORMAL} ").strip()
         
         if choice == "0":
             dramatic_print(f"{BOLD}{BLUE}[*] Exiting Krilin. Happy hunting.{NORMAL}", BLUE, 0.02)
