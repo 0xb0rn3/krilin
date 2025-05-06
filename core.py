@@ -43,7 +43,7 @@ CATEGORIES = {
     "7": ("Individual Kali Tools", [], False, "kali"),  # Will prompt for specific tools
     "8": ("Debian Backports Kernel", ["linux-image-amd64"], True, "backports"),
     "9": ("Kali Linux Kernel", ["linux-image-amd64"], True, "kali"),
-    "10": ("All Kali Hacking Tools", [], False, "kali")  # New option for all tools
+    "10": ("All Kali Hacking Tools", [], False, "kali")  # Option for all tools
 }
 
 def dramatic_print(text, color=GREEN, delay=0.01):
@@ -72,16 +72,13 @@ def display_banner():
 
 def detect_system():
     """Detect and display system information."""
-    # Get system information
     os_name = platform.system()
     os_release = platform.release()
     os_version = platform.version()
     machine_arch = platform.machine()
     
-    # Get kernel information
     kernel_info = subprocess.check_output("uname -r", shell=True).decode().strip()
     
-    # Get CPU information
     cpu_info = "Unknown"
     if os.path.exists("/proc/cpuinfo"):
         with open("/proc/cpuinfo", "r") as f:
@@ -90,7 +87,6 @@ def detect_system():
                     cpu_info = line.split(":")[1].strip()
                     break
     
-    # Get RAM information
     ram_info = "Unknown"
     if os.path.exists("/proc/meminfo"):
         with open("/proc/meminfo", "r") as f:
@@ -99,7 +95,6 @@ def detect_system():
                     ram_info = line.split(":")[1].strip()
                     break
     
-    # Format and display system information
     print(f"\n{BOLD}{BLUE}[*] System Detection Results:{NORMAL}")
     print(f"{BOLD}{GREEN}[+] OS:{NORMAL} {os_name} {os_release}")
     print(f"{BOLD}{GREEN}[+] OS Version:{NORMAL} {os_version}")
@@ -108,7 +103,6 @@ def detect_system():
     print(f"{BOLD}{GREEN}[+] CPU:{NORMAL} {cpu_info}")
     print(f"{BOLD}{GREEN}[+] Memory:{NORMAL} {ram_info}")
     
-    # Check if it's a Debian-based system
     is_debian = False
     if os.path.exists("/etc/debian_version"):
         with open("/etc/debian_version", "r") as f:
@@ -137,7 +131,6 @@ def get_debian_codename():
                     return line.split("=")[1].strip().strip('"')
     except Exception as e:
         print(f"{YELLOW}{BOLD}[!] Warning: Could not determine Debian codename: {e}{NORMAL}")
-        # Fallback to using lsb_release
         try:
             result = subprocess.run(["lsb_release", "-cs"], stdout=subprocess.PIPE, text=True, check=True)
             return result.stdout.strip()
@@ -156,19 +149,12 @@ def add_kali_keyring():
     print(f"{CYAN}{BOLD}[*] Downloading and installing Kali archive keyring...{NORMAL}")
     
     try:
-        # Download the keyring package
         subprocess.run(["wget", "-q", "-O", keyring_file, keyring_url], check=True)
-        
-        # Install the keyring package
         subprocess.run(["dpkg", "-i", keyring_file], check=True)
-        
-        # Clean up
         if os.path.exists(keyring_file):
             os.remove(keyring_file)
-            
         print(f"{GREEN}{BOLD}[+] Kali archive keyring installed successfully.{NORMAL}")
         return True
-        
     except subprocess.CalledProcessError as e:
         print(f"{RED}{BOLD}[!] Error installing Kali keyring: {e}{NORMAL}")
         print(f"{YELLOW}[!] Continuing without official Kali keyring. This may cause trust issues.{NORMAL}")
@@ -179,19 +165,14 @@ def add_repo(repo_type):
     print(f"{CYAN}{BOLD}[*] Adding {repo_type} repository...{NORMAL}")
     
     if repo_type == "kali":
-        # Add Kali Linux GPG key via the keyring package
         add_kali_keyring()
-        
-        # Add repository
         with open("/etc/apt/sources.list.d/kali.list", "w") as f:
             f.write(f"{KALI_REPO}\n")
-            
     elif repo_type == "backports":
         codename = get_debian_codename()
         with open("/etc/apt/sources.list.d/backports.list", "w") as f:
             f.write(f"deb http://deb.debian.org/debian {codename}-backports main contrib non-free non-free-firmware\n")
     
-    # Update apt cache
     print(f"{CYAN}{BOLD}[*] Updating package lists...{NORMAL}")
     try:
         subprocess.run(["apt-get", "update"], check=True)
@@ -203,10 +184,8 @@ def proactively_remove_rpcbind():
     """Proactively remove rpcbind before any installations to prevent issues."""
     print(f"{CYAN}{BOLD}[*] Proactively handling rpcbind package to prevent installation issues...{NORMAL}")
     
-    # First check if it's installed
     if check_for_rpcbind():
         print(f"{YELLOW}{BOLD}[!] rpcbind detected - removing to prevent installation issues...{NORMAL}")
-        # Stop and disable the service
         try:
             subprocess.run(["systemctl", "stop", "rpcbind"], check=False)
             subprocess.run(["systemctl", "disable", "rpcbind"], check=False)
@@ -215,7 +194,6 @@ def proactively_remove_rpcbind():
         except Exception as e:
             print(f"{YELLOW}{BOLD}[!] Warning when stopping rpcbind service: {e}{NORMAL}")
         
-        # Remove the package with force
         try:
             subprocess.run(["dpkg", "--remove", "--force-all", "rpcbind"], check=False)
             subprocess.run(["apt-get", "remove", "--purge", "-y", "rpcbind"], check=False)
@@ -223,49 +201,40 @@ def proactively_remove_rpcbind():
         except Exception as e:
             print(f"{YELLOW}{BOLD}[!] Warning when removing rpcbind: {e}{NORMAL}")
     
-    # Create and apply diversion for rpcbind
     create_rpcbind_diversion()
 
 def create_rpcbind_diversion():
     """Create a diversion for rpcbind to prevent its installation."""
     try:
-        # Create a dummy rpcbind package to divert and prevent installation
         dummy_dir = "/tmp/dummy-rpcbind"
         os.makedirs(dummy_dir, exist_ok=True)
         
-        # Create a simple postinst script that succeeds immediately
         with open(f"{dummy_dir}/postinst", "w") as f:
             f.write("#!/bin/sh\nexit 0\n")
         os.chmod(f"{dummy_dir}/postinst", 0o755)
         
-        # Create a dummy rpcbind binary
         os.makedirs(f"{dummy_dir}/usr/sbin", exist_ok=True)
         with open(f"{dummy_dir}/usr/sbin/rpcbind", "w") as f:
             f.write("#!/bin/sh\necho 'Dummy rpcbind - not functional'\nexit 0\n")
         os.chmod(f"{dummy_dir}/usr/sbin/rpcbind", 0o755)
         
-        # Set up the diversion
         if os.path.exists("/var/lib/dpkg/info/rpcbind.postinst"):
             subprocess.run(["dpkg-divert", "--local", "--rename", "--add", "/var/lib/dpkg/info/rpcbind.postinst"], check=False)
             shutil.copy2(f"{dummy_dir}/postinst", "/var/lib/dpkg/info/rpcbind.postinst")
             print(f"{GREEN}{BOLD}[+] Created diversion for rpcbind postinst script.{NORMAL}")
         
-        # Also divert the binary itself
         subprocess.run(["dpkg-divert", "--local", "--rename", "--add", "/usr/sbin/rpcbind"], check=False)
         shutil.copy2(f"{dummy_dir}/usr/sbin/rpcbind", "/usr/sbin/rpcbind")
         
         print(f"{GREEN}{BOLD}[+] Created diversions to prevent rpcbind issues.{NORMAL}")
         
-        # Clean up
         shutil.rmtree(dummy_dir, ignore_errors=True)
-        
     except Exception as e:
         print(f"{YELLOW}{BOLD}[!] Warning when creating diversions: {e}{NORMAL}")
 
 def check_for_rpcbind():
     """Check if rpcbind is installed."""
     try:
-        # Use dpkg-query to check if rpcbind is installed
         result = subprocess.run(
             ["dpkg-query", "-W", "-f='${Status}'", "rpcbind"], 
             stdout=subprocess.PIPE, 
@@ -277,20 +246,40 @@ def check_for_rpcbind():
     except Exception:
         return False
 
-def fix_dpkg_issues():
-    """Fix any interrupted dpkg installations."""
-    print(f"{CYAN}{BOLD}[*] Fixing any interrupted package installations...{NORMAL}")
+def fix_dpkg_issues_thoroughly():
+    """Fix package management issues thoroughly."""
+    print(f"{CYAN}{BOLD}[*] Fixing package management issues...{NORMAL}")
     
     try:
-        # First try standard dpkg configure
+        lock_files = [
+            "/var/lib/apt/lists/lock",
+            "/var/cache/apt/archives/lock",
+            "/var/lib/dpkg/lock",
+            "/var/lib/dpkg/lock-frontend"
+        ]
+        for lock_file in lock_files:
+            if os.path.exists(lock_file):
+                print(f"{YELLOW}[!] Removing lock file: {lock_file}{NORMAL}")
+                os.remove(lock_file)
+        
+        print(f"{CYAN}[*] Configuring unpacked packages...{NORMAL}")
         subprocess.run(["dpkg", "--configure", "-a"], check=False)
         
-        # Then try apt --fix-broken install
+        print(f"{CYAN}[*] Fixing broken dependencies...{NORMAL}")
         subprocess.run(["apt-get", "install", "-f", "-y"], check=False)
         
-        print(f"{GREEN}{BOLD}[+] Package configuration fixed.{NORMAL}")
+        print(f"{CYAN}[*] Cleaning package cache...{NORMAL}")
+        subprocess.run(["apt-get", "clean"], check=False)
+        
+        print(f"{CYAN}[*] Updating package lists with fix-missing...{NORMAL}")
+        subprocess.run(["apt-get", "update", "--fix-missing"], check=False)
+        
+        print(f"{CYAN}[*] Removing unnecessary packages...{NORMAL}")
+        subprocess.run(["apt-get", "autoremove", "-y"], check=False)
+        
+        print(f"{GREEN}{BOLD}[+] Package management issues fixed.{NORMAL}")
     except Exception as e:
-        print(f"{YELLOW}{BOLD}[!] Warning when fixing package configuration: {e}{NORMAL}")
+        print(f"{RED}{BOLD}[!] Error during package fixing: {e}{NORMAL}")
 
 def create_apt_preferences():
     """Create proper APT preferences to prevent rpcbind installation."""
@@ -307,17 +296,13 @@ def create_apt_preferences():
 def remove_repo(repo_type):
     """Remove the temporary repository."""
     print(f"{CYAN}{BOLD}[*] Cleaning up {repo_type} repository...{NORMAL}")
+    fix_dpkg_issues_thoroughly()
     
-    # Fix any interrupted dpkg operations
-    fix_dpkg_issues()
-    
-    # Then remove the repository files
     if repo_type == "kali" and os.path.exists("/etc/apt/sources.list.d/kali.list"):
         os.remove("/etc/apt/sources.list.d/kali.list")
     elif repo_type == "backports" and os.path.exists("/etc/apt/sources.list.d/backports.list"):
         os.remove("/etc/apt/sources.list.d/backports.list")
     
-    # Update apt cache
     try:
         subprocess.run(["apt-get", "update"], check=True)
         print(f"{GREEN}{BOLD}[+] Repository removed and package list updated.{NORMAL}")
@@ -341,64 +326,38 @@ def fetch_all_kali_tools():
     print(f"{CYAN}{BOLD}[*] Fetching list of all Kali tools from {KALI_TOOLS_URL}...{NORMAL}")
     
     try:
-        # Check if requests and BeautifulSoup are available
-        try:
-            import requests
-            from bs4 import BeautifulSoup
-        except ImportError:
-            print(f"{YELLOW}{BOLD}[!] Required libraries not found. Installing...{NORMAL}")
-            subprocess.run(["apt-get", "install", "-y", "python3-requests", "python3-bs4"], check=True)
-            import requests
-            from bs4 import BeautifulSoup
-        
-        # Fetch the webpage content
         response = requests.get(KALI_TOOLS_URL)
         if response.status_code != 200:
             print(f"{RED}{BOLD}[!] Failed to fetch the tools list from website. HTTP status: {response.status_code}{NORMAL}")
             return []
         
-        # Parse the HTML content
         soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # Find all tool links - looking for links to tool pages
         tool_packages = []
         
-        # Find the table containing the tools list
         tools_table = soup.find('table', class_='contenttable')
         if tools_table:
-            # Process each row in the table
             rows = tools_table.find_all('tr')
             for row in rows:
-                # Skip the header row
                 if row.find('th'):
                     continue
-                
-                # Find the package name column
                 cells = row.find_all('td')
-                if len(cells) >= 2:  # At least 2 columns for name and package
-                    # The second column usually contains the package name
+                if len(cells) >= 2:
                     package_name = cells[1].text.strip()
                     if package_name and package_name != "N/A":
                         tool_packages.append(package_name)
         
-        # If we didn't find tools in the expected format, try an alternative approach
         if not tool_packages:
-            # Look for all links to tool pages
             for link in soup.find_all('a'):
                 href = link.get('href', '')
                 if '/tools/' in href and href.endswith('/'):
-                    # Extract the package name from the URL
                     package_name = href.split('/')[-2]
                     if package_name and package_name not in tool_packages:
                         tool_packages.append(package_name)
         
         print(f"{GREEN}{BOLD}[+] Found {len(tool_packages)} Kali tools.{NORMAL}")
-        
         return tool_packages
-        
     except Exception as e:
         print(f"{RED}{BOLD}[!] Error fetching Kali tools list: {e}{NORMAL}")
-        print(f"{YELLOW}{BOLD}[!] Falling back to apt-cache method...{NORMAL}")
         return fetch_kali_tools_from_apt()
 
 def fetch_kali_tools_from_apt():
@@ -406,99 +365,74 @@ def fetch_kali_tools_from_apt():
     print(f"{CYAN}{BOLD}[*] Fetching Kali tools from repository...{NORMAL}")
     
     try:
-        # First add the Kali repository temporarily
         add_repo("kali")
-        
-        # Use apt-cache to search for metapackages containing "kali-"
         cmd = ["apt-cache", "search", "kali-"]
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, text=True, check=True)
         
-        # Parse the output to get package names
         kali_tools = []
         for line in result.stdout.split("\n"):
             if line.strip():
-                # Extract package name (first part before the dash)
                 package_name = line.split(" - ")[0].strip()
                 if package_name.startswith("kali-") or "tools" in package_name:
                     kali_tools.append(package_name)
         
-        # Also add some common individual tools not in meta-packages
         common_tools = [
             "nmap", "dirb", "nikto", "sqlmap", "hydra", "john", "hashcat", 
             "metasploit-framework", "burpsuite", "wireshark", "aircrack-ng",
             "exploitdb", "recon-ng", "wfuzz", "wpscan", "lynis", "crackmapexec"
         ]
         kali_tools.extend(common_tools)
-        
-        # Remove duplicates
         kali_tools = list(set(kali_tools))
         
         print(f"{GREEN}{BOLD}[+] Found {len(kali_tools)} Kali tools and metapackages.{NORMAL}")
         return kali_tools
-    
     except Exception as e:
         print(f"{RED}{BOLD}[!] Error fetching Kali tools from repository: {e}{NORMAL}")
-        # Return a minimal default set of tools
-        print(f"{YELLOW}{BOLD}[!] Using minimal default tool set.{NORMAL}")
         return [
             "kali-tools-top10", "kali-linux-default", "nmap", "dirb", "nikto", 
             "sqlmap", "hydra", "john", "metasploit-framework", "burpsuite"
         ]
 
 def install_all_kali_tools():
-    """Install all available Kali tools."""
+    """Install all available Kali tools with a strict warning."""
     print(f"{MAGENTA}{BOLD}[*] Preparing to install all Kali hacking tools...{NORMAL}")
     
-    # Fetch the list of all tools
     tool_packages = fetch_all_kali_tools()
     
     if not tool_packages:
         print(f"{RED}{BOLD}[!] Could not retrieve the list of Kali tools. Aborting.{NORMAL}")
         return
     
-    # Show the number of tools to be installed
     print(f"{CYAN}{BOLD}[*] Found {len(tool_packages)} tools to install.{NORMAL}")
     
-    # Warn about disk space and time
-    print(f"{YELLOW}{BOLD}[!] WARNING: Installing all tools will require significant disk space (10+ GB){NORMAL}")
-    print(f"{YELLOW}{BOLD}[!] and may take several hours to complete.{NORMAL}")
+    print(f"{RED}{BLINK}{BOLD}[!] WARNING: Installing all Kali tools at once may cause system instability, performance issues, or software conflicts.{NORMAL}")
+    print(f"{RED}{BOLD}[!] STRONGLY RECOMMENDED: Use option 7 to install individual packages instead.{NORMAL}")
+    print(f"{YELLOW}{BOLD}[!] This operation requires 10+ GB of disk space and may take hours.{NORMAL}")
+    print(f"{RED}{BOLD}[!] Proceed only if you have a system backup and accept the risks.{NORMAL}")
     
-    # Confirm installation
-    confirmation = input(f"{BOLD}{RED}[?] Are you sure you want to install ALL Kali tools? (y/n):{NORMAL} ").lower()
-    if confirmation != 'y':
-        print(f"{YELLOW}{BOLD}[!] All tools installation cancelled.{NORMAL}")
+    confirmation = input(f"{BOLD}{RED}[?] Type 'I AM READY FOR ANYTHING' to proceed or 'n' to cancel:{NORMAL} ").strip().upper()
+    if confirmation != "I AM READY FOR ANYTHING":
+        print(f"{YELLOW}{BOLD}[!] Installation of all Kali tools cancelled. Consider installing individual packages with option 7.{NORMAL}")
         return
     
-    # Offer to install in batches
     batch_option = input(f"{BOLD}{YELLOW}[?] Install in batches of 10 tools (recommended) or all at once? (b/a):{NORMAL} ").lower()
     
     try:
-        # Proactively handle rpcbind before adding repositories
         proactively_remove_rpcbind()
         create_apt_preferences()
-        
-        # Add Kali repository
         add_repo("kali")
-        fix_dpkg_issues()
+        fix_dpkg_issues_thoroughly()
         
-        # First try to install metapackages if available
         metapackages = [pkg for pkg in tool_packages if pkg.startswith("kali-")]
         if metapackages:
             print(f"{CYAN}{BOLD}[*] First installing meta-packages...{NORMAL}")
             for meta in metapackages:
-                try:
-                    print(f"{CYAN}[*] Installing {meta}...{NORMAL}")
-                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', meta], check=True, timeout=300)
-                    print(f"{GREEN}[+] Successfully installed {meta}{NORMAL}")
-                except Exception as e:
-                    print(f"{YELLOW}[!] Failed to install {meta}: {e}{NORMAL}")
+                install_with_retries(meta, repo_type="kali")
         
-        # Install individual tools
         individual_tools = [pkg for pkg in tool_packages if not pkg.startswith("kali-")]
         failed_packages = []
         
         if batch_option == 'b':
-            # Install in batches of 10
             batch_size = 10
             total_batches = (len(individual_tools) + batch_size - 1) // batch_size
             
@@ -508,40 +442,18 @@ def install_all_kali_tools():
                 
                 print(f"{CYAN}{BOLD}[*] Installing batch {batch_num}/{total_batches}: {', '.join(batch)}{NORMAL}")
                 
-                try:
-                    # Install the batch with a timeout (10 minutes per batch)
-                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends'] + batch, check=True, timeout=600)
-                    print(f"{GREEN}[+] Successfully installed batch {batch_num}{NORMAL}")
-                except Exception as e:
-                    print(f"{RED}[!] Error in batch {batch_num}: {e}{NORMAL}")
-                    # Try installing one by one if batch fails
-                    for package in batch:
-                        try:
-                            print(f"{CYAN}[*] Retry: Installing {package}...{NORMAL}")
-                            subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', package], check=True, timeout=300)
-                            print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
-                        except Exception as e:
-                            print(f"{RED}[!] Failed to install {package}: {e}{NORMAL}")
-                            failed_packages.append(package)
-                
-                # Fix any issues after each batch
-                fix_dpkg_issues()
+                for package in batch:
+                    success = install_with_retries(package, repo_type="kali")
+                    if not success:
+                        failed_packages.append(package)
         else:
-            # Install all at once (not recommended for large numbers of packages)
             for package in individual_tools:
-                try:
-                    print(f"{CYAN}[*] Installing {package}...{NORMAL}")
-                    subprocess.run(['apt-get', 'install', '-y', '--no-install-recommends', package], check=True, timeout=300)
-                    print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
-                except Exception as e:
-                    print(f"{RED}[!] Failed to install {package}: {e}{NORMAL}")
+                success = install_with_retries(package, repo_type="kali")
+                if not success:
                     failed_packages.append(package)
-                    # Try to fix broken packages after each failure
-                    fix_dpkg_issues()
         
         if failed_packages:
             print(f"{YELLOW}{BOLD}[!] The following packages failed to install: {', '.join(failed_packages)}{NORMAL}")
-            # Save failed packages to a file for reference
             with open("/tmp/krilin_failed_packages.txt", "w") as f:
                 f.write("\n".join(failed_packages))
             print(f"{YELLOW}[*] Failed packages list saved to /tmp/krilin_failed_packages.txt{NORMAL}")
@@ -552,11 +464,41 @@ def install_all_kali_tools():
         print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
     
     finally:
-        # Fix any remaining package issues
-        fix_dpkg_issues()
-        
-        # Remove the repo
+        fix_dpkg_issues_thoroughly()
         remove_repo("kali")
+
+def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
+    """Install a package with retries on failure."""
+    for attempt in range(1, max_retries + 1):
+        try:
+            print(f"{CYAN}[*] Installing {package} (attempt {attempt}/{max_retries})...{NORMAL}")
+            
+            if repo_type == "backports":
+                codename = get_debian_codename()
+                cmd = ['apt-get', 'install', '-y', '-t', f"{codename}-backports", package]
+            else:
+                cmd = ['apt-get', 'install', '-y', '--no-install-recommends', package]
+            
+            subprocess.run(cmd, check=True, timeout=timeout)
+            print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
+            return True
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:
+            print(f"{YELLOW}[!] Attempt {attempt} failed: {e}{NORMAL}")
+            fix_dpkg_issues_thoroughly()
+            
+            if attempt == max_retries:
+                try:
+                    print(f"{YELLOW}[!] Final attempt with force options...{NORMAL}")
+                    subprocess.run(["apt-get", "download", package], check=False)
+                    deb_file = next((f for f in os.listdir(".") if f.startswith(package) and f.endswith(".deb")), None)
+                    if deb_file:
+                        subprocess.run(["dpkg", "--force-all", "-i", deb_file], check=False)
+                        os.remove(deb_file)
+                except Exception as inner_e:
+                    print(f"{RED}[!] Force install failed: {inner_e}{NORMAL}")
+    
+    print(f"{RED}[!] Failed to install {package} after {max_retries} attempts.{NORMAL}")
+    return False
 
 def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     """Install selected tools or kernel with dramatic flair."""
@@ -566,13 +508,10 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     chosen_weapon = random.choice(weapons)
     power_word = random.choice(power_words)
     
-    # Special handling for different categories
     if category == "All Kali Hacking Tools":
-        # For category 10, call dedicated function
         install_all_kali_tools()
         return
     elif category == "Individual Kali Tools" and not packages:
-        # For category 7, prompt for specific tools
         packages = select_specific_tools()
         if not packages:
             return
@@ -580,44 +519,21 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
     dramatic_print(f"\n{BOLD}{RED}[*] {power_word.upper()} {category} {chosen_weapon}...{NORMAL}", RED, 0.02)
     
     try:
-        # Proactively handle rpcbind before adding repositories
         proactively_remove_rpcbind()
         create_apt_preferences()
-        
         add_repo(repo_type)
-        fix_dpkg_issues()
+        fix_dpkg_issues_thoroughly()
         
-        # Show installation progress
         print(f"{CYAN}{BOLD}[*] Installing packages: {', '.join(packages)}{NORMAL}")
         
-        # Install the packages one by one to better handle errors
         failed_packages = []
         for package in packages:
-            try:
-                print(f"{CYAN}[*] Installing {package}...{NORMAL}")
-                
-                if repo_type == "backports":
-                    codename = get_debian_codename()
-                    cmd = ['apt-get', 'install', '-y', '-t', f"{codename}-backports", package]
-                else:
-                    cmd = ['apt-get', 'install', '-y', '--no-install-recommends', package]
-                
-                # Run the installation with timeout (5 minutes per package)
-                subprocess.run(cmd, check=True, timeout=300)
-                print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
-                
-            except subprocess.TimeoutExpired:
-                print(f"{RED}[!] Installation of {package} timed out after 5 minutes.{NORMAL}")
+            success = install_with_retries(package, repo_type=repo_type)
+            if not success:
                 failed_packages.append(package)
-            except subprocess.CalledProcessError as e:
-                print(f"{RED}[!] Failed to install {package}: {e}{NORMAL}")
-                failed_packages.append(package)
-                # Try to fix broken packages after each failure
-                subprocess.run(["apt-get", "install", "-f", "-y"], check=False)
         
         if failed_packages:
             print(f"{YELLOW}{BOLD}[!] The following packages failed to install: {', '.join(failed_packages)}{NORMAL}")
-            print(f"{YELLOW}[*] You may want to try installing them individually later.{NORMAL}")
         else:
             print(f"{GREEN}{BOLD}[+] All packages successfully installed. Your pentesting arsenal is ready.{NORMAL}")
         
@@ -628,14 +544,11 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
         print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
     
     finally:
-        # Fix any remaining package issues
-        fix_dpkg_issues()
-        
-        # Remove the repo
+        fix_dpkg_issues_thoroughly()
         remove_repo(repo_type)
 
 def display_menu():
-    """Display the menu with dramatic styling."""
+    """Display the menu with dramatic styling and strict warning."""
     print(f"\n{BOLD}{BLUE}╔══════════════════════════════════╗{NORMAL}")
     print(f"{BOLD}{BLUE}║{YELLOW} KRILIN - TOOLS AND KERNEL ARSENAL {BLUE}║{NORMAL}")
     print(f"{BOLD}{BLUE}╚══════════════════════════════════╝{NORMAL}")
@@ -651,6 +564,9 @@ def display_menu():
             print(f"{BOLD}{CYAN}[{key}] {category}{NORMAL}")
     
     print(f"{BOLD}{YELLOW}[0] Exit{NORMAL}")
+    
+    print(f"\n{BOLD}{RED}[!] WARNING: Option 10 (All Kali Hacking Tools) may cause system instability.{NORMAL}")
+    print(f"{BOLD}{RED}[!] Use option 7 for individual packages to avoid risks.{NORMAL}")
 
 def check_required_packages():
     """Check and install required packages for Krilin."""
@@ -672,13 +588,10 @@ def main():
     display_banner()
     detect_system()
     
-    # Check for required packages
     check_required_packages()
     
-    # Fix any existing package issues
-    fix_dpkg_issues()
+    fix_dpkg_issues_thoroughly()
     
-    # Handle rpcbind globally at startup
     proactively_remove_rpcbind()
     create_apt_preferences()
     
