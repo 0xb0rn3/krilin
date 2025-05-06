@@ -39,10 +39,10 @@ git clone https://github.com/0xb0rn3/krilin.git
 cd krilin
 
 # Make the script executable
-chmod +x krilin
+chmod +x run
 
 # Run with root privileges
-sudo ./krilin
+sudo ./run
 ```
 
 ## 🎯 Usage
@@ -50,7 +50,7 @@ sudo ./krilin
 Run the script with root privileges:
 
 ```bash
-sudo ./krilin
+sudo ./run
 ```
 
 Select from the available categories:
