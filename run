@@ -449,25 +449,58 @@ trap cleanup INT TERM
 
 # Main function with improved flow
 main() {
-    # Check root privileges
     check_root
     
-    # Print banner
+    # Detect OS type
+    if command -v apt >/dev/null 2>&1 && [ -f /etc/debian_version ]; then
+        OS_TYPE="debian"
+    elif command -v pacman >/dev/null 2>&1; then
+        OS_TYPE="arch"
+    else
+        OS_TYPE="unsupported"
+    fi
+    
+    # Handle based on OS type
+    if [ "$OS_TYPE" = "arch" ]; then
+        echo -e "${RED}${BOLD}[!] ERROR: Krilin is not designed for Arch-based systems."
+        echo -e "${RED}${BOLD}[!] Proceeding may break your system due to incompatible package management."
+        echo -e "${YELLOW}${BOLD}[!] For Arch-based systems, please use the 'bkygo' project: https://github.com/0xb0rn3/bkygo"
+        echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
+        exit 1
+    elif [ "$OS_TYPE" = "unsupported" ]; then
+        echo -e "${RED}${BOLD}[!] ERROR: Your operating system is not supported by Krilin."
+        echo -e "${YELLOW}${BOLD}[!] Krilin is designed for Debian-based systems only."
+        echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
+        exit 1
+    elif [ "$OS_TYPE" = "debian" ]; then
+        echo -e "${RED}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
+        echo -e "${RED}${BOLD}║                              WARNING                                 ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ Krilin will modify your system environment by installing Kali Linux  ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ tools and/or kernels. Proceeding means you accept full liability for ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ any damages or issues caused to your system. Krilin is a rolling     ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ project based on Kali's rolling release philosophy, which may lead   ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ to frequent updates and potential instability. Ensure you have       ║${NORMAL}"
+        echo -e "${RED}${BOLD}║ backups and understand the risks before continuing.                  ║${NORMAL}"
+        echo -e "${RED}${BOLD}╚══════════════════════════════════════════════════════════════════════╝${NORMAL}"
+        read -p "${YELLOW}${BOLD}[?] Do you accept these terms and wish to proceed? (y/n):${NORMAL} " answer
+        if [ "$answer" != "y" ]; then
+            echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
+            exit 0
+        fi
+        echo -e "${CYAN}${BOLD}[*] Proceeding with Krilin initialization...${NORMAL}"
+        sleep 2
+    fi
+    
     print_banner
     
-    # Simulate loading with improved progress bar
     progress_bar 3
     
-    # Check git repository
     check_git_repo
     
-    # Install dependencies
     install_dependencies
     
-    # Display README
     display_readme
     
-    # Run Krilin with any command line arguments
     run_krilin "$@"
     
     echo -e "\n${GREEN}${BOLD}[+] Krilin session completed.${NORMAL}"
