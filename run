@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# ╔══════════════════════════════════════════════════════════════╗
-# ║                                                              ║
-# ║   KRILIN v0.2 - Stable Environment Setup                     ║
-# ║   Weaponize Your Debian System with Kali Linux Arsenal       ║
-# ║                                                              ║
-# ╚══════════════════════════════════════════════════════════════╝
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║                                                                      ║
+# ║   KRILIN v 0.2 - Security Framework                                 ║
+# ║   Weaponize Your Debian System with Advanced Security Arsenal        ║
+# ║                                                                      ║
+# ╚══════════════════════════════════════════════════════════════════════╝
 
 # Color and style codes
 RED='\033[91m'
@@ -14,30 +14,34 @@ YELLOW='\033[93m'
 BLUE='\033[94m'
 MAGENTA='\033[95m'
 CYAN='\033[96m'
+WHITE='\033[97m'
 BOLD='\033[1m'
+ITALIC='\033[3m'
+UNDERLINE='\033[4m'
+BLINK='\033[5m'
 NORMAL='\033[0m'
 
-# Spinner animation function
+# Spinner animation function with improved visuals
 spinner() {
     local pid=$1
     local delay=0.1
-    local spinstr='|/-\'
+    local spinstr='⣾⣽⣻⢿⡿⣟⣯⣷'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
+        printf " ${CYAN}${BOLD}[%c]${NORMAL}  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
         sleep $delay
-        printf "\b\b\b\b\b\b"
+        printf "\b\b\b\b\b\b\b"
     done
     printf "    \b\b\b\b"
 }
 
-# Progress bar function
+# Progress bar function with improved visuals
 progress_bar() {
     local duration=$1
     local width=50
     local progress=0
-    local fill_char="▓"
+    local fill_char="█"
     local empty_char="░"
     
     echo -ne "\n"
@@ -45,21 +49,30 @@ progress_bar() {
         local current_progress=$((progress * width / 100))
         local remaining=$((width - current_progress))
         
-        # Create the bar with appropriate colored segments
+        # Create color gradient for progress bar
         local bar=""
         for ((i=0; i<current_progress; i++)); do
-            bar="${bar}${GREEN}${fill_char}${NORMAL}"
+            if [ $i -lt $((width / 3)) ]; then
+                bar="${bar}${CYAN}${fill_char}${NORMAL}"
+            elif [ $i -lt $((width * 2 / 3)) ]; then
+                bar="${bar}${BLUE}${fill_char}${NORMAL}"
+            else
+                bar="${bar}${MAGENTA}${fill_char}${NORMAL}"
+            fi
         done
         for ((i=0; i<remaining; i++)); do
-            bar="${bar}${CYAN}${empty_char}${NORMAL}"
+            bar="${bar}${BLUE}${empty_char}${NORMAL}"
         done
         
-        # Print the progress bar
-        echo -ne "\r[${bar}] ${progress}%"
+        # Print the progress bar with percentage
+        echo -ne "\r${YELLOW}${BOLD}[${NORMAL}${bar}${YELLOW}${BOLD}]${NORMAL} ${CYAN}${BOLD}${progress}%${NORMAL}"
         
-        # Increment progress
-        progress=$((progress + 1))
-        sleep $((duration / 100))
+        # Increment progress with variable speed for more realistic feel
+        progress=$((progress + (RANDOM % 3 + 1)))
+        if [ $progress -gt 100 ]; then
+            progress=100
+        fi
+        sleep $(echo "scale=3; ($duration / 100) * (0.5 + (0.5 * $RANDOM / 32767))" | bc)
     done
     echo -ne "\n\n"
 }
@@ -73,33 +86,61 @@ check_root() {
     fi
 }
 
-# Print banner
+# Print banner with improved ASCII art and animation
 print_banner() {
     clear
-    echo -e "${BLUE}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
-    echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}██╗  ██╗${RED}██████╗ ${YELLOW}██╗${GREEN}██╗     ${BLUE}██╗${MAGENTA}███╗   ██╗${WHITE}   ${CYAN}v1.2.0${BLUE}        ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}██║ ██╔╝${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}████╗  ██║${BLUE}                 ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}█████╔╝ ${RED}██████╔╝${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██╔██╗ ██║${BLUE}                 ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}██╔═██╗ ${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██║╚██╗██║${BLUE}                 ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}██║  ██╗${RED}██║  ██║${YELLOW}██║${GREEN}███████╗${BLUE}██║${MAGENTA}██║ ╚████║${BLUE}                 ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${CYAN}╚═╝  ╚═╝${RED}╚═╝  ╚═╝${YELLOW}╚═╝${GREEN}╚══════╝${BLUE}╚═╝${MAGENTA}╚═╝  ╚═══╝${BLUE}                 ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}╠══════════════════════════════════════════════════════════════════════╣${NORMAL}"
-    echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${GREEN}KRILIN - Advanced Debian Security Weaponization Platform${BLUE}          ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${YELLOW}⚡ ${WHITE}Built by ${CYAN}0xb0rn3 ${WHITE}| Maintained by ${CYAN}Team SecVulnHub${BLUE}               ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║   ${YELLOW}⚙️ ${WHITE}${ITALIC}\"Transform your Debian system into a security powerhouse\"${BLUE}      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-    echo -e "${BLUE}${BOLD}╚══════════════════════════════════════════════════════════════════════╝${NORMAL}"
+    # Terminal size-aware banner (will adapt to smaller terminals)
+    local term_width=$(tput cols)
+    local min_width=80
+    
+    # Use standard size if terminal is big enough, otherwise adjust
+    if [ "$term_width" -ge "$min_width" ]; then
+        echo -e "${BLUE}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}██╗  ██╗${RED}██████╗ ${YELLOW}██╗${GREEN}██╗     ${BLUE}██╗${MAGENTA}███╗   ██╗${BLUE}                 ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}██║ ██╔╝${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}████╗  ██║${CYAN}   v0.2${BLUE}        ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}█████╔╝ ${RED}██████╔╝${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██╔██╗ ██║${BLUE}                 ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}██╔═██╗ ${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██║╚██╗██║${BLUE}                 ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}██║  ██╗${RED}██║  ██║${YELLOW}██║${GREEN}███████╗${BLUE}██║${MAGENTA}██║ ╚████║${BLUE}                 ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}╚═╝  ╚═╝${RED}╚═╝  ╚═╝${YELLOW}╚═╝${GREEN}╚══════╝${BLUE}╚═╝${MAGENTA}╚═╝  ╚═══╝${BLUE}                 ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}╠══════════════════════════════════════════════════════════════════════╣${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${GREEN}${BOLD}KRILIN - Advanced Debian Security Weaponization Platform${BLUE}          ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${YELLOW}⚡ ${WHITE}Built by ${CYAN}0xb0rn3 ${WHITE}| Maintained by ${CYAN}Team SecVulnHub${BLUE}               ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${YELLOW}⚙️  ${WHITE}${ITALIC}\"Transform your Debian system into a security powerhouse\"${BLUE}      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}╚══════════════════════════════════════════════════════════════════════╝${NORMAL}"
+    else
+        # Simplified banner for smaller terminals
+        echo -e "${BLUE}${BOLD}╔════════════════════════════════════════════╗${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                            ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}K${RED}R${YELLOW}I${GREEN}L${BLUE}I${MAGENTA}N${CYAN} Security Framework ${BLUE}v1.2.0   ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║                                            ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${GREEN}${BOLD}Debian Security Platform${BLUE}            ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${WHITE}By ${CYAN}Team SecVulnHub${BLUE}                  ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}╚════════════════════════════════════════════╝${NORMAL}"
+    fi
+    
     echo
-    echo -e "${CYAN}${BOLD}[*] Creating stable environment for Krilin...${NORMAL}"
+    # Animated status messages
+    for i in {1..3}; do
+        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL}\r"
+        sleep 0.3
+        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components.  ${NORMAL}\r"
+        sleep 0.3
+        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components.. ${NORMAL}\r"
+        sleep 0.3
+        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL}\r"
+        sleep 0.3
+    done
+    echo -e "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL} ${GREEN}${BOLD}Done!${NORMAL}"
     echo -e "${CYAN}${BOLD}[*] Starting system assessment...${NORMAL}"
     echo
 }
 
-# Check and update git repository
+# Enhanced repository check and update
 check_git_repo() {
     echo -e "${CYAN}${BOLD}[*] Checking for repository updates...${NORMAL}"
     
@@ -112,87 +153,113 @@ check_git_repo() {
             echo -e "${CYAN}${BOLD}[*] Cloning Krilin repository...${NORMAL}"
             git clone https://github.com/0xb0rn3/krilin.git &
             spinner $!
-            echo -e "${GREEN}[+] Repository cloned successfully.${NORMAL}"
-            cd krilin
+            echo -e "${GREEN}${BOLD}[+] Repository cloned successfully.${NORMAL}"
+            cd krilin || { 
+                echo -e "${RED}${BOLD}[!] Failed to enter krilin directory.${NORMAL}"
+                exit 1
+            }
         else
-            echo -e "${GREEN}[+] Krilin directory found.${NORMAL}"
-            cd krilin
+            echo -e "${GREEN}${BOLD}[+] Krilin directory found.${NORMAL}"
+            cd krilin || { 
+                echo -e "${RED}${BOLD}[!] Failed to enter krilin directory.${NORMAL}"
+                exit 1
+            }
             
             # If it's a git repository, pull latest changes
             if [ -d ".git" ]; then
                 echo -e "${CYAN}${BOLD}[*] Pulling latest changes...${NORMAL}"
-                git pull &
+                git pull origin main &
                 spinner $!
-                echo -e "${GREEN}[+] Repository updated successfully.${NORMAL}"
+                echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
             fi
         fi
     else
         # Pull latest changes
         echo -e "${CYAN}${BOLD}[*] Pulling latest changes...${NORMAL}"
-        git pull &
+        git pull origin main &
         spinner $!
-        echo -e "${GREEN}[+] Repository updated successfully.${NORMAL}"
+        echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
     fi
 }
 
-# Install required system dependencies
+# Install required system dependencies with better error handling
 install_dependencies() {
     echo -e "${CYAN}${BOLD}[*] Installing system dependencies...${NORMAL}"
     
-    # List of required packages
-    PACKAGES=(
-        "python3" 
-        "python3-pip" 
-        "python3-venv" 
-        "python3-requests" 
-        "python3-bs4" 
-        "wget" 
-        "apt-transport-https" 
-        "gnupg" 
-        "dpkg-dev"
-        "lsb-release"
-        "software-properties-common"
+    # List of required packages with categorization
+    declare -A PACKAGE_CATEGORIES
+    PACKAGE_CATEGORIES=(
+        ["System"]="apt-transport-https gnupg dpkg-dev lsb-release software-properties-common curl wget"
+        ["Python"]="python3 python3-pip python3-venv python3-requests python3-bs4"
+        ["Development"]="build-essential git make autoconf"
+        ["Networking"]="nmap netcat-openbsd net-tools"
     )
     
-    # Update package list
-    apt-get update -qq &
-    spinner $!
+    # Update package list with better error handling
+    echo -e "${YELLOW}[>] Updating package lists...${NORMAL}"
+    if apt-get update -qq; then
+        echo -e "${GREEN}[+] Package lists updated.${NORMAL}"
+    else
+        echo -e "${RED}${BOLD}[!] Failed to update package lists. Continuing anyway...${NORMAL}"
+    fi
     
-    # Install packages
-    for pkg in "${PACKAGES[@]}"; do
-        # Check if package is already installed
-        if ! dpkg -s "$pkg" >/dev/null 2>&1; then
-            echo -e "${YELLOW}[>] Installing ${pkg}...${NORMAL}"
-            apt-get install -y -qq "$pkg" >/dev/null 2>&1 &
-            spinner $!
-            echo -e "${GREEN}[+] ${pkg} installed.${NORMAL}"
-        else
-            echo -e "${GREEN}[+] ${pkg} already installed.${NORMAL}"
-        fi
+    # Install packages by category
+    for category in "${!PACKAGE_CATEGORIES[@]}"; do
+        echo -e "${BLUE}${BOLD}[+] Installing ${category} packages:${NORMAL}"
+        
+        # Get packages for this category
+        PACKAGES=(${PACKAGE_CATEGORIES[$category]})
+        
+        for pkg in "${PACKAGES[@]}"; do
+            # Check if package is already installed
+            if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+                echo -ne "${YELLOW}[>] Installing ${pkg}...${NORMAL}"
+                if apt-get install -y -qq "$pkg" >/dev/null 2>&1; then
+                    echo -e "\r${GREEN}[+] ${pkg} installed.     ${NORMAL}"
+                else
+                    echo -e "\r${RED}[!] Failed to install ${pkg}. ${NORMAL}"
+                fi
+            else
+                echo -e "${GREEN}[+] ${pkg} already installed.${NORMAL}"
+            fi
+        done
     done
     
-    # Setup Python environment
+    # Setup Python environment with virtual environment support
     echo -e "${CYAN}${BOLD}[*] Setting up Python environment...${NORMAL}"
     
-    # Install pip packages
+    # Create virtual environment if it doesn't exist
+    if [ ! -d "venv" ]; then
+        echo -e "${YELLOW}[>] Creating virtual environment...${NORMAL}"
+        python3 -m venv venv
+        echo -e "${GREEN}[+] Virtual environment created.${NORMAL}"
+    fi
+    
+    # Install pip packages (both system-wide and in venv for flexibility)
     PIP_PACKAGES=(
         "requests" 
         "beautifulsoup4"
+        "colorama"
+        "rich"
     )
     
+    echo -e "${YELLOW}[>] Installing Python packages...${NORMAL}"
     for pip_pkg in "${PIP_PACKAGES[@]}"; do
-        echo -e "${YELLOW}[>] Installing ${pip_pkg}...${NORMAL}"
-        python3 -m pip install --break-system-packages "$pip_pkg" >/dev/null 2>&1 &
-        spinner $!
-        echo -e "${GREEN}[+] ${pip_pkg} installed.${NORMAL}"
+        echo -ne "${YELLOW}[>] Installing ${pip_pkg}...${NORMAL}"
+        if python3 -m pip install --break-system-packages "$pip_pkg" >/dev/null 2>&1; then
+            echo -e "\r${GREEN}[+] ${pip_pkg} installed.     ${NORMAL}"
+        else
+            echo -e "\r${RED}[!] Failed to install ${pip_pkg}. ${NORMAL}"
+        fi
     done
     
     echo -e "${GREEN}${BOLD}[+] All dependencies installed successfully.${NORMAL}"
 }
 
-# Display README in elegant format
+# Display README in elegant format with animated sections
 display_readme() {
-    echo -e "${CYAN}${BOLD}[*] Displaying Krilin overview...${NORMAL}\n"
+    echo -e "${CYAN}${BOLD}[*] Loading Krilin overview...${NORMAL}\n"
+    sleep 1
     
     # Check if README.md exists
     if [ -f "README.md" ]; then
@@ -205,59 +272,123 @@ display_readme() {
         # Extract features
         FEATURES=$(sed -n '/## ✨ Features/,/## /p' README.md | grep '^\- ' | sed 's/^\- //')
         
-        # Print formatted README
-        echo -e "${BLUE}════════════════════════════════════════════════════════════════${NORMAL}"
+        # Print formatted README with animated border
+        echo -ne "${BLUE}"
+        for i in $(seq 1 70); do
+            echo -ne "═"
+            sleep 0.005
+        done
+        echo -ne "${NORMAL}\n"
+        
         echo -e "${BOLD}${MAGENTA}  ${TITLE}${NORMAL}"
         echo -e "${YELLOW}  ${DESCRIPTION}${NORMAL}"
-        echo -e "${BLUE}════════════════════════════════════════════════════════════════${NORMAL}\n"
+        
+        echo -ne "${BLUE}"
+        for i in $(seq 1 70); do
+            echo -ne "═"
+            sleep 0.005
+        done
+        echo -ne "${NORMAL}\n\n"
         
         echo -e "${BOLD}${GREEN}🔥 Features:${NORMAL}\n"
         
-        # Print each feature
+        # Print each feature with a small delay for animation effect
         echo "$FEATURES" | while IFS= read -r line; do
             # Extract the emoji if present
             EMOJI=$(echo "$line" | grep -o '^\S\+' || echo "•")
             TEXT=$(echo "$line" | sed 's/^\S\+//')
             
             echo -e "  ${CYAN}${EMOJI}${GREEN}${TEXT}${NORMAL}"
+            sleep 0.1
         done
         
-        echo -e "\n${BLUE}════════════════════════════════════════════════════════════════${NORMAL}\n"
+        echo -ne "\n${BLUE}"
+        for i in $(seq 1 70); do
+            echo -ne "═"
+            sleep 0.005
+        done
+        echo -ne "${NORMAL}\n\n"
     else
         echo -e "${YELLOW}${BOLD}[!] README.md not found. Continuing...${NORMAL}"
     fi
 }
 
-# Run Krilin script
+# Check for core.py and execute it
 run_krilin() {
     echo -e "${CYAN}${BOLD}[*] Preparing to launch Krilin...${NORMAL}"
     
+    # Check if core.py exists
+    if [ ! -f "core.py" ]; then
+        echo -e "${RED}${BOLD}[!] core.py not found in current directory.${NORMAL}"
+        echo -e "${YELLOW}${BOLD}[!] Searching for core.py...${NORMAL}"
+        
+        # Try to find core.py in subdirectories
+        CORE_PATH=$(find . -name "core.py" -type f 2>/dev/null | head -1)
+        
+        if [ -n "$CORE_PATH" ]; then
+            echo -e "${GREEN}${BOLD}[+] Found core.py at: ${CORE_PATH}${NORMAL}"
+            CD_PATH=$(dirname "$CORE_PATH")
+            cd "$CD_PATH" || {
+                echo -e "${RED}${BOLD}[!] Failed to navigate to directory containing core.py.${NORMAL}"
+                exit 1
+            }
+        else
+            echo -e "${RED}${BOLD}[!] Could not find core.py. Exiting.${NORMAL}"
+            exit 1
+        fi
+    fi
+    
+    # Make sure we're in the right place by checking for key files
+    if [ ! -f "core.py" ]; then
+        echo -e "${RED}${BOLD}[!] Not in the correct directory. core.py not found.${NORMAL}"
+        exit 1
+    fi
+    
     # Make the script executable
-    chmod +x krilin
+    chmod +x core.py
     
     # Execute the script
-    echo -e "${GREEN}${BOLD}[+] Launching Krilin.${NORMAL}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════${NORMAL}"
+    echo -e "${GREEN}${BOLD}[+] Launching Krilin core module.${NORMAL}"
+    echo -ne "${BLUE}"
+    for i in $(seq 1 70); do
+        echo -ne "═"
+        sleep 0.007
+    done
+    echo -ne "${NORMAL}\n\n"
     
-    # Execute krilin script
-    python3 core.py
+    # Execute krilin core.py with proper environment
+    python3 core.py "$@"
     
     # Return code
     RC=$?
     
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════${NORMAL}"
+    echo -ne "\n${BLUE}"
+    for i in $(seq 1 70); do
+        echo -ne "═"
+        sleep 0.005
+    done
+    echo -ne "${NORMAL}\n"
     
     if [ $RC -eq 0 ]; then
         echo -e "${GREEN}${BOLD}[+] Krilin executed successfully.${NORMAL}"
     else
         echo -e "${RED}${BOLD}[!] Krilin execution failed with return code ${RC}.${NORMAL}"
+        echo -e "${YELLOW}${BOLD}[!] Check the logs for more information.${NORMAL}"
     fi
 }
 
-# Handle signals for clean exit
-trap 'echo -e "\n${RED}${BOLD}[!] Execution interrupted. Cleaning up...${NORMAL}"; exit 1' INT TERM
+# Handle signals for clean exit with better cleanup
+cleanup() {
+    echo -e "\n${YELLOW}${BOLD}[!] Execution interrupted. Cleaning up...${NORMAL}"
+    # Kill any background processes
+    jobs -p | xargs -r kill
+    exit 1
+}
 
-# Main function
+# Set up signal handlers
+trap cleanup INT TERM
+
+# Main function with improved flow
 main() {
     # Check root privileges
     check_root
@@ -265,9 +396,8 @@ main() {
     # Print banner
     print_banner
     
-    # Simulate loading
-    echo -e "${CYAN}${BOLD}[*] Initializing environment...${NORMAL}"
-    progress_bar 2
+    # Simulate loading with improved progress bar
+    progress_bar 3
     
     # Check git repository
     check_git_repo
@@ -278,11 +408,12 @@ main() {
     # Display README
     display_readme
     
-    # Run Krilin
-    run_krilin
+    # Run Krilin with any command line arguments
+    run_krilin "$@"
     
-    echo -e "\n${GREEN}${BOLD}[+] Krilin setup completed.${NORMAL}"
+    echo -e "\n${GREEN}${BOLD}[+] Krilin session completed.${NORMAL}"
+    echo -e "${CYAN}${BOLD}[*] Thank you for using Krilin Security Framework.${NORMAL}"
 }
 
-# Execute main function
+# Execute main function with all arguments
 main "$@"
