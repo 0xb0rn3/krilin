@@ -150,7 +150,7 @@ def get_debian_codename():
 
 def add_kali_keyring():
     """Download and install the Kali archive keyring package."""
-    keyring_url = "https://http.kali.org/pool/main/k/kali-archive-keyring/kali-archive-keyring_2024.1_all.deb"
+    keyring_url = "https://archive.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2025.1_all.deb"
     keyring_file = "/tmp/kali-archive-keyring.deb"
     
     print(f"{CYAN}{BOLD}[*] Downloading and installing Kali archive keyring...{NORMAL}")
