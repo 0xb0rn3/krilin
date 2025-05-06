@@ -2,7 +2,7 @@
 
 # ╔══════════════════════════════════════════════════════════════════════╗
 # ║                                                                      ║
-# ║   KRILIN v 0.2 - Security Framework                                 ║
+# ║   KRILIN v0.2. - Security Framework                                 ║
 # ║   Weaponize Your Debian System with Advanced Security Arsenal        ║
 # ║                                                                      ║
 # ╚══════════════════════════════════════════════════════════════════════╝
@@ -98,7 +98,7 @@ print_banner() {
         echo -e "${BLUE}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
         echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
         echo -e "${BLUE}${BOLD}║   ${CYAN}██╗  ██╗${RED}██████╗ ${YELLOW}██╗${GREEN}██╗     ${BLUE}██╗${MAGENTA}███╗   ██╗${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}██║ ██╔╝${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}████╗  ██║${CYAN}   v0.2${BLUE}        ║${NORMAL}"
+        echo -e "${BLUE}${BOLD}║   ${CYAN}██║ ██╔╝${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}████╗  ██║${CYAN}   v0.2.${BLUE}        ║${NORMAL}"
         echo -e "${BLUE}${BOLD}║   ${CYAN}█████╔╝ ${RED}██████╔╝${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██╔██╗ ██║${BLUE}                 ║${NORMAL}"
         echo -e "${BLUE}${BOLD}║   ${CYAN}██╔═██╗ ${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██║╚██╗██║${BLUE}                 ║${NORMAL}"
         echo -e "${BLUE}${BOLD}║   ${CYAN}██║  ██╗${RED}██║  ██║${YELLOW}██║${GREEN}███████╗${BLUE}██║${MAGENTA}██║ ╚████║${BLUE}                 ║${NORMAL}"
@@ -140,7 +140,7 @@ print_banner() {
     echo
 }
 
-# Enhanced repository check and update
+# Enhanced repository check and update with conflict resolution
 check_git_repo() {
     echo -e "${CYAN}${BOLD}[*] Checking for repository updates...${NORMAL}"
     
@@ -151,8 +151,7 @@ check_git_repo() {
         # Check if krilin directory exists, if not, clone it
         if [ ! -d "krilin" ]; then
             echo -e "${CYAN}${BOLD}[*] Cloning Krilin repository...${NORMAL}"
-            git clone https://github.com/0xb0rn3/krilin.git &
-            spinner $!
+            git clone https://github.com/0xb0rn3/krilin.git
             echo -e "${GREEN}${BOLD}[+] Repository cloned successfully.${NORMAL}"
             cd krilin || { 
                 echo -e "${RED}${BOLD}[!] Failed to enter krilin directory.${NORMAL}"
@@ -165,20 +164,80 @@ check_git_repo() {
                 exit 1
             }
             
-            # If it's a git repository, pull latest changes
+            # If it's a git repository, handle updates with potential conflicts
             if [ -d ".git" ]; then
-                echo -e "${CYAN}${BOLD}[*] Pulling latest changes...${NORMAL}"
-                git pull origin main &
-                spinner $!
-                echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+                handle_git_updates
             fi
         fi
     else
+        # Handle updates with potential conflicts
+        handle_git_updates
+    fi
+}
+
+# Handle git updates with conflict resolution
+handle_git_updates() {
+    echo -e "${CYAN}${BOLD}[*] Preparing to update repository...${NORMAL}"
+    
+    # Check for local changes
+    if ! git diff --quiet HEAD; then
+        echo -e "${YELLOW}${BOLD}[!] Local changes detected that might conflict with updates.${NORMAL}"
+        
+        # Create a backup of the run script if it exists and has changes
+        if [ -f "run" ] && ! git diff --quiet HEAD -- run; then
+            echo -e "${CYAN}${BOLD}[*] Creating backup of your customized run script...${NORMAL}"
+            cp run run.backup.$(date +%Y%m%d%H%M%S)
+            echo -e "${GREEN}${BOLD}[+] Backup created successfully.${NORMAL}"
+        fi
+        
+        # Stash changes to allow pulling updates
+        echo -e "${CYAN}${BOLD}[*] Temporarily saving your local changes...${NORMAL}"
+        git stash save "Automatic stash before updating Krilin"
+        
         # Pull latest changes
+        echo -e "${CYAN}${BOLD}[*] Pulling latest changes from repository...${NORMAL}"
+        if git pull origin main --no-edit; then
+            echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+            
+            # Try to apply stashed changes back
+            echo -e "${CYAN}${BOLD}[*] Attempting to restore your customizations...${NORMAL}"
+            
+            # Check if there are stashes to apply
+            if git stash list | grep -q "Automatic stash"; then
+                if git stash pop; then
+                    echo -e "${GREEN}${BOLD}[+] Your customizations were successfully restored.${NORMAL}"
+                else
+                    echo -e "${YELLOW}${BOLD}[!] Conflicts occurred when restoring your customizations.${NORMAL}"
+                    echo -e "${YELLOW}${BOLD}[!] Your changes are saved in the git stash.${NORMAL}"
+                    echo -e "${YELLOW}${BOLD}[!] You can view them later with 'git stash list' and 'git stash show'.${NORMAL}"
+                    
+                    # If run script had conflicts, restore from backup
+                    if [ -f "run.backup."* ]; then
+                        LATEST_BACKUP=$(ls -t run.backup.* | head -1)
+                        echo -e "${CYAN}${BOLD}[*] Restoring run script from backup: ${LATEST_BACKUP}${NORMAL}"
+                        cp "$LATEST_BACKUP" run
+                        chmod +x run
+                        echo -e "${GREEN}${BOLD}[+] Run script restored from backup.${NORMAL}"
+                    fi
+                fi
+            fi
+        else
+            echo -e "${RED}${BOLD}[!] Failed to update repository.${NORMAL}"
+            # Try to restore stashed changes if update failed
+            if git stash list | grep -q "Automatic stash"; then
+                echo -e "${CYAN}${BOLD}[*] Restoring your previous state...${NORMAL}"
+                git stash pop
+                echo -e "${GREEN}${BOLD}[+] Previous state restored.${NORMAL}"
+            fi
+        fi
+    else
+        # No local changes, safe to update
         echo -e "${CYAN}${BOLD}[*] Pulling latest changes...${NORMAL}"
-        git pull origin main &
-        spinner $!
-        echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+        if git pull origin main --no-edit; then
+            echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+        else
+            echo -e "${RED}${BOLD}[!] Update failed. Please check your network connection.${NORMAL}"
+        fi
     fi
 }
 
