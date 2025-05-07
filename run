@@ -201,6 +201,7 @@ generate_requirements() {
         cat > requirements.txt << EOF
 # System packages
 apt-transport-https
+terminator
 gnupg
 dpkg-dev
 lsb-release
