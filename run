@@ -62,7 +62,7 @@ progress_bar() {
 check_root() {
     if [ "$(id -u)" -ne 0 ]; then
         log_error "Hey $USER this script must be run as root."
-        log_warn "Please run with: sudo ./run in the tool's. Thanks"
+        log_warn "Please run with: sudo ./run in the Krilin's directory. Thanks!"
         exit 1
     fi
 }
