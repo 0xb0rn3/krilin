@@ -60,10 +60,12 @@ Select from the available categories:
 4. Wireless Attacks
 5. Web Application Analysis
 6. Password Attacks
-7. All Kali Linux Tools
+7. Individual Kali Tools
 8. Debian Backports Kernel
 9. Kali Linux Kernel
-
+10. ALL KLAI LINUX TOOLS + KERNEL INCLUDED
+0. Exit
+   
 ## ⚙️ Requirements
 
 - Debian-based system (Debian, Ubuntu, Linux Mint, etc.)
