@@ -1,446 +1,427 @@
 #!/usr/bin/env bash
+# Exit on error
+set -e
 
-# ╔══════════════════════════════════════════════════════════════════════╗
-# ║                                                                      ║
-# ║   KRILIN v0.2. - Security Framework                                 ║
-# ║   Weaponize Your Debian System with Advanced Security Arsenal        ║
-# ║                                                                      ║
-# ╚══════════════════════════════════════════════════════════════════════╝
+# Color definitions
+C_RESET="\033[0m"
+C_RED="\033[1;31m"
+C_GREEN="\033[1;32m"
+C_YELLOW="\033[1;33m"
+C_BLUE="\033[1;34m"
+C_CYAN="\033[1;36m"
+C_WHITE="\033[1;37m"
 
-# Color and style codes
-RED='\033[91m'
-GREEN='\033[92m'
-YELLOW='\033[93m'
-BLUE='\033[94m'
-MAGENTA='\033[95m'
-CYAN='\033[96m'
-WHITE='\033[97m'
-BOLD='\033[1m'
-ITALIC='\033[3m'
-UNDERLINE='\033[4m'
-BLINK='\033[5m'
-NORMAL='\033[0m'
+# Log levels 
+log_info() { echo -e "${C_CYAN}[INFO]${C_RESET} $1"; }
+log_success() { echo -e "${C_GREEN}[OK]${C_RESET} $1"; }
+log_warn() { echo -e "${C_YELLOW}[WARN]${C_RESET} $1"; }
+log_error() { echo -e "${C_RED}[ERROR]${C_RESET} $1"; }
+log_prompt() { echo -ne "${C_YELLOW}[?]${C_RESET} $1"; }
 
-# Spinner animation function with improved visuals
+# Spinner animation
 spinner() {
     local pid=$1
     local delay=0.1
     local spinstr='⣾⣽⣻⢿⡿⣟⣯⣷'
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
         local temp=${spinstr#?}
-        printf " ${CYAN}${BOLD}[%c]${NORMAL}  " "$spinstr"
+        printf " ${C_CYAN}[%c]${C_RESET} " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
         sleep $delay
-        printf "\b\b\b\b\b\b\b"
+        printf "\b\b\b\b\b"
     done
     printf "    \b\b\b\b"
 }
 
-# Progress bar function with improved visuals
+# Progress bar
 progress_bar() {
     local duration=$1
-    local width=50
+    local width=40
     local progress=0
-    local fill_char="█"
-    local empty_char="░"
     
     echo -ne "\n"
     while [ $progress -lt 100 ]; do
-        local current_progress=$((progress * width / 100))
-        local remaining=$((width - current_progress))
+        local current=$(( progress * width / 100 ))
+        local remainder=$(( width - current ))
         
-        # Create color gradient for progress bar
-        local bar=""
-        for ((i=0; i<current_progress; i++)); do
-            if [ $i -lt $((width / 3)) ]; then
-                bar="${bar}${CYAN}${fill_char}${NORMAL}"
-            elif [ $i -lt $((width * 2 / 3)) ]; then
-                bar="${bar}${BLUE}${fill_char}${NORMAL}"
-            else
-                bar="${bar}${MAGENTA}${fill_char}${NORMAL}"
-            fi
-        done
-        for ((i=0; i<remaining; i++)); do
-            bar="${bar}${BLUE}${empty_char}${NORMAL}"
-        done
+        # Create progress bar
+        local bar=$(printf "%${current}s" | tr ' ' '█')
+        local empty=$(printf "%${remainder}s" | tr ' ' '░')
         
-        # Print the progress bar with percentage
-        echo -ne "\r${YELLOW}${BOLD}[${NORMAL}${bar}${YELLOW}${BOLD}]${NORMAL} ${CYAN}${BOLD}${progress}%${NORMAL}"
+        echo -ne "\r${C_BLUE}[${C_CYAN}${bar}${empty}${C_BLUE}] ${C_CYAN}${progress}%${C_RESET}"
         
-        # Increment progress with variable speed for more realistic feel
-        progress=$((progress + (RANDOM % 3 + 1)))
-        if [ $progress -gt 100 ]; then
-            progress=100
-        fi
+        # Progress incrementation
+        progress=$(( progress + (RANDOM % 3 + 1) ))
+        if [ $progress -gt 100 ]; then progress=100; fi
         sleep $(echo "scale=3; ($duration / 100) * (0.5 + (0.5 * $RANDOM / 32767))" | bc)
     done
     echo -ne "\n\n"
 }
 
-# Check root privileges
+# Check root 
 check_root() {
     if [ "$(id -u)" -ne 0 ]; then
-        echo -e "${RED}${BOLD}[!] This script must be run as root.${NORMAL}\n"
-        echo -e "${YELLOW}${BOLD}[!] Please run with:${NORMAL} sudo ./run"
+        log_error "This script must be run as root."
+        log_warn "Please run with: sudo ./run"
         exit 1
     fi
 }
 
-# Print banner with improved ASCII art and animation
+# Print banner
 print_banner() {
     clear
-    # Terminal size-aware banner (will adapt to smaller terminals)
-    local term_width=$(tput cols)
-    local min_width=80
-    
-    # Use standard size if terminal is big enough, otherwise adjust
-    if [ "$term_width" -ge "$min_width" ]; then
-        echo -e "${BLUE}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}██╗  ██╗${RED}██████╗ ${YELLOW}██╗${GREEN}██╗     ${BLUE}██╗${MAGENTA}███╗   ██╗${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}██║ ██╔╝${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}████╗  ██║${CYAN}   v0.2.${BLUE}        ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}█████╔╝ ${RED}██████╔╝${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██╔██╗ ██║${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}██╔═██╗ ${RED}██╔══██╗${YELLOW}██║${GREEN}██║     ${BLUE}██║${MAGENTA}██║╚██╗██║${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}██║  ██╗${RED}██║  ██║${YELLOW}██║${GREEN}███████╗${BLUE}██║${MAGENTA}██║ ╚████║${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}╚═╝  ╚═╝${RED}╚═╝  ╚═╝${YELLOW}╚═╝${GREEN}╚══════╝${BLUE}╚═╝${MAGENTA}╚═╝  ╚═══╝${BLUE}                 ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}╠══════════════════════════════════════════════════════════════════════╣${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${GREEN}${BOLD}KRILIN - Advanced Debian Security Weaponization Platform${BLUE}          ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${YELLOW}⚡ ${WHITE}Built by ${CYAN}0xb0rn3 ${WHITE}| Maintained by ${CYAN}Team SecVulnHub${BLUE}               ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${YELLOW}⚙️  ${WHITE}${ITALIC}\"Transform your Debian system into a security powerhouse\"${BLUE}      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                                                      ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}╚══════════════════════════════════════════════════════════════════════╝${NORMAL}"
-    else
-        # Simplified banner for smaller terminals
-        echo -e "${BLUE}${BOLD}╔════════════════════════════════════════════╗${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                            ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${CYAN}K${RED}R${YELLOW}I${GREEN}L${BLUE}I${MAGENTA}N${CYAN} Security Framework ${BLUE}v1.2.0   ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║                                            ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${GREEN}${BOLD}Debian Security Platform${BLUE}            ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}║   ${WHITE}By ${CYAN}Team SecVulnHub${BLUE}                  ║${NORMAL}"
-        echo -e "${BLUE}${BOLD}╚════════════════════════════════════════════╝${NORMAL}"
-    fi
-    
-    echo
-    # Animated status messages
-    for i in {1..3}; do
-        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL}\r"
-        sleep 0.3
-        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components.  ${NORMAL}\r"
-        sleep 0.3
-        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components.. ${NORMAL}\r"
-        sleep 0.3
-        echo -ne "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL}\r"
-        sleep 0.3
-    done
-    echo -e "${CYAN}${BOLD}[*] Initializing Krilin components...${NORMAL} ${GREEN}${BOLD}Done!${NORMAL}"
-    echo -e "${CYAN}${BOLD}[*] Starting system assessment...${NORMAL}"
+    echo -e "${C_BLUE}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_BLUE}║                                                           ║${C_RESET}"
+    echo -e "${C_BLUE}║   ${C_CYAN}██╗  ██╗${C_RED}██████╗ ${C_YELLOW}██╗${C_GREEN}██╗     ${C_BLUE}██╗${C_CYAN}███╗   ██╗${C_BLUE}        ║${C_RESET}"
+    echo -e "${C_BLUE}║   ${C_CYAN}█████╔╝ ${C_RED}██████╔╝${C_YELLOW}██║${C_GREEN}██║     ${C_BLUE}██║${C_CYAN}██╔██╗ ██║${C_BLUE}        ║${C_RESET}"
+    echo -e "${C_BLUE}║   ${C_CYAN}██║  ██╗${C_RED}██║  ██║${C_YELLOW}██║${C_GREEN}███████╗${C_BLUE}██║${C_CYAN}██║ ╚████║${C_BLUE}        ║${C_RESET}"
+    echo -e "${C_BLUE}║                                                           ║${C_RESET}"
+    echo -e "${C_BLUE}║   ${C_GREEN}Security Framework v0.2 Latest Stable${C_BLUE}                       ║${C_RESET}"
+    echo -e "${C_BLUE}║   ${C_WHITE}\"Transform your Debian system into a security powerhouse\"${C_BLUE}  ║${C_RESET}"
+    echo -e "${C_BLUE}║                                                           ║${C_RESET}"
+    echo -e "${C_BLUE}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
     echo
 }
 
-# Enhanced repository check and update with conflict resolution
+# Repository management
 check_git_repo() {
-    echo -e "${CYAN}${BOLD}[*] Checking for repository updates...${NORMAL}"
+    log_info "Checking for repository updates..."
     
     # Check if git directory exists
     if [ ! -d ".git" ]; then
-        echo -e "${YELLOW}${BOLD}[!] Not in a git repository. Checking for krilin folder...${NORMAL}"
+        log_warn "Not in a git repository. Checking for krilin folder..."
         
-        # Check if krilin directory exists, if not, clone it
         if [ ! -d "krilin" ]; then
-            echo -e "${CYAN}${BOLD}[*] Cloning Krilin repository...${NORMAL}"
-            git clone https://github.com/0xb0rn3/krilin.git
-            echo -e "${GREEN}${BOLD}[+] Repository cloned successfully.${NORMAL}"
+            log_info "Cloning Krilin repository..."
+            git clone https://github.com/0xb0rn3/krilin.git &
+            spinner $!
+            log_success "Repository cloned successfully."
             cd krilin || { 
-                echo -e "${RED}${BOLD}[!] Failed to enter krilin directory.${NORMAL}"
+                log_error "Failed to enter krilin directory."
                 exit 1
             }
         else
-            echo -e "${GREEN}${BOLD}[+] Krilin directory found.${NORMAL}"
+            log_success "Krilin directory found."
             cd krilin || { 
-                echo -e "${RED}${BOLD}[!] Failed to enter krilin directory.${NORMAL}"
+                log_error "Failed to enter krilin directory."
                 exit 1
             }
             
-            # If it's a git repository, handle updates with potential conflicts
             if [ -d ".git" ]; then
                 handle_git_updates
             fi
         fi
     else
-        # Handle updates with potential conflicts
         handle_git_updates
     fi
 }
 
-# Handle git updates with conflict resolution
+# Improved git update handling
 handle_git_updates() {
-    echo -e "${CYAN}${BOLD}[*] Preparing to update repository...${NORMAL}"
+    log_info "Checking for updates..."
+    
+    # Fetch latest without merging first
+    git fetch origin main --quiet
+    
+    # Check if we're behind
+    LOCAL=$(git rev-parse HEAD)
+    REMOTE=$(git rev-parse origin/main)
+    
+    if [ "$LOCAL" = "$REMOTE" ]; then
+        log_success "Repository is up to date."
+        return 0
+    fi
+    
+    log_info "Updates available. Preparing to update..."
     
     # Check for local changes
     if ! git diff --quiet HEAD; then
-        echo -e "${YELLOW}${BOLD}[!] Local changes detected that might conflict with updates.${NORMAL}"
+        log_warn "Local changes detected that might conflict with updates."
         
-        # Create a backup of the run script if it exists and has changes
+        # Create backup if needed
         if [ -f "run" ] && ! git diff --quiet HEAD -- run; then
-            echo -e "${CYAN}${BOLD}[*] Creating backup of your customized run script...${NORMAL}"
-            cp run run.backup.$(date +%Y%m%d%H%M%S)
-            echo -e "${GREEN}${BOLD}[+] Backup created successfully.${NORMAL}"
+            BACKUP_FILE="run.backup.$(date +%Y%m%d%H%M%S)"
+            log_info "Creating backup of your customized run script to $BACKUP_FILE..."
+            cp run "$BACKUP_FILE"
+            log_success "Backup created successfully."
         fi
         
-        # Stash changes to allow pulling updates
-        echo -e "${CYAN}${BOLD}[*] Temporarily saving your local changes...${NORMAL}"
-        git stash save "Automatic stash before updating Krilin"
+        # Stash changes
+        log_info "Temporarily saving your local changes..."
+        git stash save "Automatic stash before updating Krilin" --quiet
         
         # Pull latest changes
-        echo -e "${CYAN}${BOLD}[*] Pulling latest changes from repository...${NORMAL}"
-        if git pull origin main --no-edit; then
-            echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+        log_info "Pulling latest changes from repository..."
+        if git pull origin main --no-edit --quiet; then
+            log_success "Repository updated successfully."
             
             # Try to apply stashed changes back
-            echo -e "${CYAN}${BOLD}[*] Attempting to restore your customizations...${NORMAL}"
-            
-            # Check if there are stashes to apply
             if git stash list | grep -q "Automatic stash"; then
-                if git stash pop; then
-                    echo -e "${GREEN}${BOLD}[+] Your customizations were successfully restored.${NORMAL}"
+                log_info "Attempting to restore your customizations..."
+                if git stash pop --quiet; then
+                    log_success "Your customizations were successfully restored."
                 else
-                    echo -e "${YELLOW}${BOLD}[!] Conflicts occurred when restoring your customizations.${NORMAL}"
-                    echo -e "${YELLOW}${BOLD}[!] Your changes are saved in the git stash.${NORMAL}"
-                    echo -e "${YELLOW}${BOLD}[!] You can view them later with 'git stash list' and 'git stash show'.${NORMAL}"
+                    log_warn "Conflicts occurred when restoring your customizations."
+                    log_warn "Your changes are saved in the git stash."
                     
-                    # If run script had conflicts, restore from backup
-                    if [ -f "run.backup."* ]; then
+                    # Restore from backup if needed
+                    if compgen -G "run.backup.*" > /dev/null; then
                         LATEST_BACKUP=$(ls -t run.backup.* | head -1)
-                        echo -e "${CYAN}${BOLD}[*] Restoring run script from backup: ${LATEST_BACKUP}${NORMAL}"
+                        log_info "Restoring run script from backup: ${LATEST_BACKUP}"
                         cp "$LATEST_BACKUP" run
                         chmod +x run
-                        echo -e "${GREEN}${BOLD}[+] Run script restored from backup.${NORMAL}"
+                        log_success "Run script restored from backup."
                     fi
                 fi
             fi
         else
-            echo -e "${RED}${BOLD}[!] Failed to update repository.${NORMAL}"
-            # Try to restore stashed changes if update failed
+            log_error "Failed to update repository."
+            # Restore stashed changes if update failed
             if git stash list | grep -q "Automatic stash"; then
-                echo -e "${CYAN}${BOLD}[*] Restoring your previous state...${NORMAL}"
-                git stash pop
-                echo -e "${GREEN}${BOLD}[+] Previous state restored.${NORMAL}"
+                log_info "Restoring your previous state..."
+                git stash pop --quiet
+                log_success "Previous state restored."
             fi
         fi
     else
         # No local changes, safe to update
-        echo -e "${CYAN}${BOLD}[*] Pulling latest changes...${NORMAL}"
-        if git pull origin main --no-edit; then
-            echo -e "${GREEN}${BOLD}[+] Repository updated successfully.${NORMAL}"
+        log_info "Pulling latest changes..."
+        if git pull origin main --no-edit --quiet; then
+            log_success "Repository updated successfully."
         else
-            echo -e "${RED}${BOLD}[!] Update failed. Please check your network connection.${NORMAL}"
+            log_error "Update failed. Please check your network connection."
         fi
     fi
 }
 
-# Install required system dependencies with better error handling
+# Generate requirements file if it doesn't exist
+generate_requirements() {
+    if [ ! -f "requirements.txt" ]; then
+        log_info "Creating requirements file..."
+        cat > requirements.txt << EOF
+# System packages
+apt-transport-https
+gnupg
+dpkg-dev
+lsb-release
+software-properties-common
+curl
+wget
+build-essential
+git
+make
+autoconf
+
+# Python system packages
+python3
+python3-pip
+python3-venv
+python3-requests
+python3-bs4
+
+# Network tools
+nmap
+netcat-openbsd
+net-tools
+
+# Python pip packages
+requests
+beautifulsoup4
+colorama
+rich
+EOF
+        log_success "Requirements file created."
+    fi
+}
+
+# Smart dependency installation with requirements file
 install_dependencies() {
-    echo -e "${CYAN}${BOLD}[*] Installing system dependencies...${NORMAL}"
-    
-    # List of required packages with categorization
-    declare -A PACKAGE_CATEGORIES
-    PACKAGE_CATEGORIES=(
-        ["System"]="apt-transport-https gnupg dpkg-dev lsb-release software-properties-common curl wget"
-        ["Python"]="python3 python3-pip python3-venv python3-requests python3-bs4"
-        ["Development"]="build-essential git make autoconf"
-        ["Networking"]="nmap netcat-openbsd net-tools"
-    )
+    log_info "Installing system dependencies..."
+    generate_requirements
     
     # Update package list with better error handling
-    echo -e "${YELLOW}[>] Updating package lists...${NORMAL}"
-    if apt-get update -qq; then
-        echo -e "${GREEN}[+] Package lists updated.${NORMAL}"
-    else
-        echo -e "${RED}${BOLD}[!] Failed to update package lists. Continuing anyway...${NORMAL}"
+    log_info "Updating package lists..."
+    if ! apt-get update -qq; then
+        log_warn "Failed to update package lists. Continuing anyway..."
     fi
     
-    # Install packages by category
-    for category in "${!PACKAGE_CATEGORIES[@]}"; do
-        echo -e "${BLUE}${BOLD}[+] Installing ${category} packages:${NORMAL}"
+    # Parse requirements file and install packages by type
+    SYS_PKGS=()
+    PIP_PKGS=()
+    
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Skip comments and empty lines
+        [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
         
-        # Get packages for this category
-        PACKAGES=(${PACKAGE_CATEGORIES[$category]})
-        
-        for pkg in "${PACKAGES[@]}"; do
-            # Check if package is already installed
-            if ! dpkg -s "$pkg" >/dev/null 2>&1; then
-                echo -ne "${YELLOW}[>] Installing ${pkg}...${NORMAL}"
-                if apt-get install -y -qq "$pkg" >/dev/null 2>&1; then
-                    echo -e "\r${GREEN}[+] ${pkg} installed.     ${NORMAL}"
-                else
-                    echo -e "\r${RED}[!] Failed to install ${pkg}. ${NORMAL}"
-                fi
+        # Sort packages by type
+        if [[ "$line" == python3-* || "$line" == "python3" ]]; then
+            SYS_PKGS+=("$line")
+        elif [[ "$line" =~ ^(apt-|dpkg-|lsb-|software-|build-|git|make|autoconf|curl|wget|nmap|netcat-|net-) ]]; then
+            SYS_PKGS+=("$line")
+        else
+            PIP_PKGS+=("$line")
+        fi
+    done < requirements.txt
+    
+    # Install system packages if not already installed
+    for pkg in "${SYS_PKGS[@]}"; do
+        # Check if package is already installed
+        if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+            log_info "Installing ${pkg}..."
+            if apt-get install -y -qq "$pkg" >/dev/null 2>&1; then
+                log_success "${pkg} installed."
             else
-                echo -e "${GREEN}[+] ${pkg} already installed.${NORMAL}"
+                log_warn "Failed to install ${pkg}."
             fi
-        done
+        else
+            log_success "${pkg} already installed."
+        fi
     done
     
-    # Setup Python environment with virtual environment support
-    echo -e "${CYAN}${BOLD}[*] Setting up Python environment...${NORMAL}"
+    # Setup Python environment
+    log_info "Setting up Python environment..."
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "venv" ]; then
-        echo -e "${YELLOW}[>] Creating virtual environment...${NORMAL}"
+        log_info "Creating virtual environment..."
         python3 -m venv venv
-        echo -e "${GREEN}[+] Virtual environment created.${NORMAL}"
+        log_success "Virtual environment created."
     fi
     
-    # Install pip packages (both system-wide and in venv for flexibility)
-    PIP_PACKAGES=(
-        "requests" 
-        "beautifulsoup4"
-        "colorama"
-        "rich"
-    )
-    
-    echo -e "${YELLOW}[>] Installing Python packages...${NORMAL}"
-    for pip_pkg in "${PIP_PACKAGES[@]}"; do
-        echo -ne "${YELLOW}[>] Installing ${pip_pkg}...${NORMAL}"
-        if python3 -m pip install --break-system-packages "$pip_pkg" >/dev/null 2>&1; then
-            echo -e "\r${GREEN}[+] ${pip_pkg} installed.     ${NORMAL}"
-        else
-            echo -e "\r${RED}[!] Failed to install ${pip_pkg}. ${NORMAL}"
-        fi
-    done
-    
-    echo -e "${GREEN}${BOLD}[+] All dependencies installed successfully.${NORMAL}"
-}
-
-# Display README in elegant format with animated sections
-display_readme() {
-    echo -e "${CYAN}${BOLD}[*] Loading Krilin overview...${NORMAL}\n"
-    sleep 1
-    
-    # Check if README.md exists
-    if [ -f "README.md" ]; then
-        # Extract title
-        TITLE=$(grep -m 1 "# " README.md | sed 's/# //')
-        
-        # Extract description
-        DESCRIPTION=$(grep -m 1 "<h3>" README.md | sed 's/<h3>//;s/<\/h3>//')
-        
-        # Extract features
-        FEATURES=$(sed -n '/## ✨ Features/,/## /p' README.md | grep '^\- ' | sed 's/^\- //')
-        
-        # Print formatted README with animated border
-        echo -ne "${BLUE}"
-        for i in $(seq 1 70); do
-            echo -ne "═"
-            sleep 0.005
+    # Install pip packages
+    if [ ${#PIP_PKGS[@]} -gt 0 ]; then
+        log_info "Installing Python packages..."
+        for pip_pkg in "${PIP_PKGS[@]}"; do
+            # Check if already installed
+            if ! python3 -m pip freeze | grep -q "^${pip_pkg}==" 2>/dev/null; then
+                log_info "Installing ${pip_pkg}..."
+                if python3 -m pip install --quiet --break-system-packages "$pip_pkg" >/dev/null 2>&1; then
+                    log_success "${pip_pkg} installed."
+                else
+                    log_warn "Failed to install ${pip_pkg}."
+                fi
+            else
+                log_success "${pip_pkg} already installed."
+            fi
         done
-        echo -ne "${NORMAL}\n"
-        
-        echo -e "${BOLD}${MAGENTA}  ${TITLE}${NORMAL}"
-        echo -e "${YELLOW}  ${DESCRIPTION}${NORMAL}"
-        
-        echo -ne "${BLUE}"
-        for i in $(seq 1 70); do
-            echo -ne "═"
-            sleep 0.005
-        done
-        echo -ne "${NORMAL}\n\n"
-        
-        echo -e "${BOLD}${GREEN}🔥 Features:${NORMAL}\n"
-        
-        # Print each feature with a small delay for animation effect
-        echo "$FEATURES" | while IFS= read -r line; do
-            # Extract the emoji if present
-            EMOJI=$(echo "$line" | grep -o '^\S\+' || echo "•")
-            TEXT=$(echo "$line" | sed 's/^\S\+//')
-            
-            echo -e "  ${CYAN}${EMOJI}${GREEN}${TEXT}${NORMAL}"
-            sleep 0.1
-        done
-        
-        echo -ne "\n${BLUE}"
-        for i in $(seq 1 70); do
-            echo -ne "═"
-            sleep 0.005
-        done
-        echo -ne "${NORMAL}\n\n"
-    else
-        echo -e "${YELLOW}${BOLD}[!] README.md not found. Continuing...${NORMAL}"
     fi
+    
+    log_success "All dependencies installed successfully."
 }
 
-# Check for core.py and execute it
+# Improved core.py executor
 run_krilin() {
-    echo -e "${CYAN}${BOLD}[*] Preparing to launch Krilin...${NORMAL}"
+    log_info "Preparing to launch Krilin..."
     
     # Check if core.py exists
     if [ ! -f "core.py" ]; then
-        echo -e "${RED}${BOLD}[!] core.py not found in current directory.${NORMAL}"
-        echo -e "${YELLOW}${BOLD}[!] Searching for core.py...${NORMAL}"
+        log_warn "core.py not found in current directory."
         
         # Try to find core.py in subdirectories
         CORE_PATH=$(find . -name "core.py" -type f 2>/dev/null | head -1)
         
         if [ -n "$CORE_PATH" ]; then
-            echo -e "${GREEN}${BOLD}[+] Found core.py at: ${CORE_PATH}${NORMAL}"
+            log_success "Found core.py at: ${CORE_PATH}"
             CD_PATH=$(dirname "$CORE_PATH")
             cd "$CD_PATH" || {
-                echo -e "${RED}${BOLD}[!] Failed to navigate to directory containing core.py.${NORMAL}"
+                log_error "Failed to navigate to directory containing core.py."
                 exit 1
             }
         else
-            echo -e "${RED}${BOLD}[!] Could not find core.py. Exiting.${NORMAL}"
+            log_error "Could not find core.py. Exiting."
             exit 1
         fi
     fi
     
-    # Make sure we're in the right place by checking for key files
+    # Final check for core.py
     if [ ! -f "core.py" ]; then
-        echo -e "${RED}${BOLD}[!] Not in the correct directory. core.py not found.${NORMAL}"
+        log_error "Not in the correct directory. core.py not found."
         exit 1
     fi
     
     # Make the script executable
     chmod +x core.py
     
-    # Execute the script
-    echo -e "${GREEN}${BOLD}[+] Launching Krilin core module.${NORMAL}"
-    echo -ne "${BLUE}"
-    for i in $(seq 1 70); do
-        echo -ne "═"
-        sleep 0.007
-    done
-    echo -ne "${NORMAL}\n\n"
+    # Launch separator
+    echo -e "${C_BLUE}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_BLUE}║                   LAUNCHING KRILIN CORE                   ║${C_RESET}"
+    echo -e "${C_BLUE}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
+    echo
     
-    # Execute krilin core.py with proper environment
+    # Execute core.py
     python3 core.py "$@"
-    
-    # Return code
     RC=$?
     
-    echo -ne "\n${BLUE}"
-    for i in $(seq 1 70); do
-        echo -ne "═"
-        sleep 0.005
-    done
-    echo -ne "${NORMAL}\n"
+    echo
+    echo -e "${C_BLUE}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_BLUE}║                    SESSION COMPLETE                       ║${C_RESET}"
+    echo -e "${C_BLUE}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
     
     if [ $RC -eq 0 ]; then
-        echo -e "${GREEN}${BOLD}[+] Krilin executed successfully.${NORMAL}"
+        log_success "Krilin executed successfully."
     else
-        echo -e "${RED}${BOLD}[!] Krilin execution failed with return code ${RC}.${NORMAL}"
-        echo -e "${YELLOW}${BOLD}[!] Check the logs for more information.${NORMAL}"
+        log_error "Krilin execution failed with return code ${RC}."
+        log_warn "Check the logs for more information."
     fi
 }
 
-# Handle signals for clean exit with better cleanup
+# OS detection and verification
+check_os_compatibility() {
+    log_info "Checking system compatibility..."
+    
+    # Detect OS type
+    if command -v apt >/dev/null 2>&1 && [ -f /etc/debian_version ]; then
+        OS_TYPE="debian"
+        log_success "Detected compatible Debian-based system."
+    elif command -v pacman >/dev/null 2>&1; then
+        OS_TYPE="arch"
+    else
+        OS_TYPE="unsupported"
+    fi
+    
+    # Handle based on OS type
+    if [ "$OS_TYPE" = "arch" ]; then
+        log_error "Krilin is not designed for Arch-based systems."
+        log_warn "Proceeding may break your system due to incompatible package management."
+        log_warn "For Arch-based systems, please use the 'bkygo' project found at: https://github.com/0xb0rn3/bkygo"
+        log_warn "Exiting Krilin. Thank you!"
+        exit 1
+    elif [ "$OS_TYPE" = "unsupported" ]; then
+        log_error "Your operating system is not supported by Krilin."
+        log_warn "Krilin is designed for Debian-based systems only."
+        log_warn "Exiting Krilin."
+        exit 1
+    fi
+}
+
+# Display warning and get confirmation
+display_warning() {
+    echo -e "${C_RED}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_RED}║                        WARNING!                           ║${C_RESET}"
+    echo -e "${C_RED}║                                                           ║${C_RESET}"
+    echo -e "${C_RED}║  Krilin will modify your system by installing Kali Linux  ║${C_RESET}"
+    echo -e "${C_RED}║  tools and/or kernels. You accept full liability for any  ║${C_RESET}"
+    echo -e "${C_RED}║  damages or issues caused to your system.                 ║${C_RESET}"
+    echo -e "${C_RED}║                                                           ║${C_RESET}"
+    echo -e "${C_RED}║  Ensure you have backups before continuing.               ║${C_RESET}"
+    echo -e "${C_RED}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
+    echo
+    
+    log_prompt "Do you accept these terms and wish to proceed? (y/n): "
+    read -r answer
+    if [ "$answer" != "y" ]; then
+        log_warn "Exiting Krilin."
+        exit 0
+    fi
+    log_info "Proceeding with Krilin initialization..."
+}
+
+# Handle signals for clean exit
 cleanup() {
-    echo -e "\n${YELLOW}${BOLD}[!] Execution interrupted. Cleaning up...${NORMAL}"
+    echo
+    log_warn "Execution interrupted. Cleaning up..."
     # Kill any background processes
-    jobs -p | xargs -r kill
+    jobs -p | xargs -r kill &>/dev/null
     exit 1
 }
 
@@ -450,61 +431,15 @@ trap cleanup INT TERM
 # Main function with improved flow
 main() {
     check_root
-    
-    # Detect OS type
-    if command -v apt >/dev/null 2>&1 && [ -f /etc/debian_version ]; then
-        OS_TYPE="debian"
-    elif command -v pacman >/dev/null 2>&1; then
-        OS_TYPE="arch"
-    else
-        OS_TYPE="unsupported"
-    fi
-    
-    # Handle based on OS type
-    if [ "$OS_TYPE" = "arch" ]; then
-        echo -e "${RED}${BOLD}[!] ERROR: Krilin is not designed for Arch-based systems."
-        echo -e "${RED}${BOLD}[!] Proceeding may break your system due to incompatible package management."
-        echo -e "${YELLOW}${BOLD}[!] For Arch-based systems, please use the 'bkygo' project: https://github.com/0xb0rn3/bkygo"
-        echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
-        exit 1
-    elif [ "$OS_TYPE" = "unsupported" ]; then
-        echo -e "${RED}${BOLD}[!] ERROR: Your operating system is not supported by Krilin."
-        echo -e "${YELLOW}${BOLD}[!] Krilin is designed for Debian-based systems only."
-        echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
-        exit 1
-    elif [ "$OS_TYPE" = "debian" ]; then
-        echo -e "${RED}${BOLD}╔══════════════════════════════════════════════════════════════════════╗${NORMAL}"
-        echo -e "${RED}${BOLD}║                              WARNING                                 ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ Krilin will modify your system environment by installing Kali Linux  ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ tools and/or kernels. Proceeding means you accept full liability for ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ any damages or issues caused to your system. Krilin is a rolling     ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ project based on Kali's rolling release philosophy, which may lead   ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ to frequent updates and potential instability. Ensure you have       ║${NORMAL}"
-        echo -e "${RED}${BOLD}║ backups and understand the risks before continuing.                  ║${NORMAL}"
-        echo -e "${RED}${BOLD}╚══════════════════════════════════════════════════════════════════════╝${NORMAL}"
-        read -p "${YELLOW}${BOLD}[?] Do you accept these terms and wish to proceed? (y/n):${NORMAL} " answer
-        if [ "$answer" != "y" ]; then
-            echo -e "${YELLOW}${BOLD}[!] Exiting Krilin."
-            exit 0
-        fi
-        echo -e "${CYAN}${BOLD}[*] Proceeding with Krilin initialization...${NORMAL}"
-        sleep 2
-    fi
-    
+    check_os_compatibility
+    display_warning
     print_banner
-    
-    progress_bar 3
-    
+    progress_bar 2
     check_git_repo
-    
     install_dependencies
-    
-    display_readme
-    
     run_krilin "$@"
     
-    echo -e "\n${GREEN}${BOLD}[+] Krilin session completed.${NORMAL}"
-    echo -e "${CYAN}${BOLD}[*] Thank you for using Krilin Security Framework.${NORMAL}"
+    log_success "Thank you for using Krilin Security Framework - 0xb0rn3"
 }
 
 # Execute main function with all arguments
