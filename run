@@ -61,8 +61,8 @@ progress_bar() {
 # Check root 
 check_root() {
     if [ "$(id -u)" -ne 0 ]; then
-        log_error "This script must be run as root."
-        log_warn "Please run with: sudo ./run"
+        log_error "Hey $USER this script must be run as root."
+        log_warn "Please run with: sudo ./run in the tool's. Thanks"
         exit 1
     fi
 }
@@ -116,7 +116,7 @@ check_git_repo() {
     fi
 }
 
-# Improved git update handling
+# Git updates handling
 handle_git_updates() {
     log_info "Checking for updates..."
     
@@ -132,7 +132,7 @@ handle_git_updates() {
         return 0
     fi
     
-    log_info "Updates available. Preparing to update..."
+    log_info "Some Updates available. Preparing to update..."
     
     # Check for local changes
     if ! git diff --quiet HEAD; then
@@ -147,13 +147,13 @@ handle_git_updates() {
         fi
         
         # Stash changes
-        log_info "Temporarily saving your local changes..."
+        log_info "Temporarily saving $USER local changes..."
         git stash save "Automatic stash before updating Krilin" --quiet
         
         # Pull latest changes
-        log_info "Pulling latest changes from repository..."
+        log_info "Checking for latest updates from Krilin's repository..."
         if git pull origin main --no-edit --quiet; then
-            log_success "Repository updated successfully."
+            log_success "Krilin updated successfully."
             
             # Try to apply stashed changes back
             if git stash list | grep -q "Automatic stash"; then
@@ -187,9 +187,9 @@ handle_git_updates() {
         # No local changes, safe to update
         log_info "Pulling latest changes..."
         if git pull origin main --no-edit --quiet; then
-            log_success "Repository updated successfully."
+            log_success "Tool updated successfully."
         else
-            log_error "Update failed. Please check your network connection."
+            log_error "Tool update failed! Please check your network connection."
         fi
     fi
 }
@@ -237,12 +237,12 @@ EOF
 
 # Smart dependency installation with requirements file
 install_dependencies() {
-    log_info "Installing system dependencies..."
+    log_info "Installing needed dependencies..."
     generate_requirements
     
     # Update package list with better error handling
     log_info "Updating package lists..."
-    if ! apt-get update -qq; then
+    if ! apt update -qq; then
         log_warn "Failed to update package lists. Continuing anyway..."
     fi
     
@@ -307,7 +307,7 @@ install_dependencies() {
         done
     fi
     
-    log_success "All dependencies installed successfully."
+    log_success "All needed dependencies installed successfully. GREEN FLAG proceeding!"
 }
 
 # Improved core.py executor
@@ -345,7 +345,7 @@ run_krilin() {
     
     # Launch separator
     echo -e "${C_BLUE}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
-    echo -e "${C_BLUE}║                   LAUNCHING KRILIN CORE                   ║${C_RESET}"
+    echo -e "${C_BLUE}║                   LAUNCHING CORE                          ║${C_RESET}"
     echo -e "${C_BLUE}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
     echo
     
@@ -362,18 +362,18 @@ run_krilin() {
         log_success "Krilin executed successfully."
     else
         log_error "Krilin execution failed with return code ${RC}."
-        log_warn "Check the logs for more information."
+        log_warn "Check the logs for more information or contact project maintainer and report error immediately if it persists! THANK YOU!"
     fi
 }
 
 # OS detection and verification
 check_os_compatibility() {
-    log_info "Checking system compatibility..."
+    log_info "Checking $USER system compatibility..."
     
     # Detect OS type
     if command -v apt >/dev/null 2>&1 && [ -f /etc/debian_version ]; then
         OS_TYPE="debian"
-        log_success "Detected compatible Debian-based system."
+        log_success "Detected Debian-based system!"
     elif command -v pacman >/dev/null 2>&1; then
         OS_TYPE="arch"
     else
@@ -382,14 +382,14 @@ check_os_compatibility() {
     
     # Handle based on OS type
     if [ "$OS_TYPE" = "arch" ]; then
-        log_error "Krilin is not designed for Arch-based systems."
-        log_warn "Proceeding may break your system due to incompatible package management."
-        log_warn "For Arch-based systems, please use the 'bkygo' project found at: https://github.com/0xb0rn3/bkygo"
-        log_warn "Exiting Krilin. Thank you!"
+        log_error "Hey $USER Krilin is STRICTLY NOT DESIGNED for any Arch-based systems."
+        log_warn "Proceeding may break your system due to incompatible package management and system handling behaviour."
+        log_warn "For Arch-based systems, please use the 'bkygo' project found at: https://github.com/0xb0rn3/bkygo specifially designed for 100% ARCH BASE compatibility"
+        log_warn "Exiting Krilin. Thank you for checking us out!"
         exit 1
     elif [ "$OS_TYPE" = "unsupported" ]; then
         log_error "Your operating system is not supported by Krilin."
-        log_warn "Krilin is designed for Debian-based systems only."
+        log_warn "Krilin is designed for Debian-based systems only. You DO NOT WANT TO MAKE THAT MISTAKE $USER"
         log_warn "Exiting Krilin."
         exit 1
     fi
@@ -397,30 +397,30 @@ check_os_compatibility() {
 
 # Display warning and get confirmation
 display_warning() {
-    echo -e "${C_RED}╔═══════════════════════════════════════════════════════════╗${C_RESET}"
-    echo -e "${C_RED}║                        WARNING!                           ║${C_RESET}"
-    echo -e "${C_RED}║                                                           ║${C_RESET}"
-    echo -e "${C_RED}║  Krilin will modify your system by installing Kali Linux  ║${C_RESET}"
-    echo -e "${C_RED}║  tools and/or kernels. You accept full liability for any  ║${C_RESET}"
-    echo -e "${C_RED}║  damages or issues caused to your system.                 ║${C_RESET}"
-    echo -e "${C_RED}║                                                           ║${C_RESET}"
-    echo -e "${C_RED}║  Ensure you have backups before continuing.               ║${C_RESET}"
-    echo -e "${C_RED}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
+    echo -e "${C_RED}╔════════════════════════════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_RED}║                        WARNING! to $USER                                       ║${C_RESET}"
+    echo -e "${C_RED}║                                                                                ║${C_RESET}"
+    echo -e "${C_RED}║  Krilin will HIGHLY MODIFY your system by installing Kali Linux                ║${C_RESET}"
+    echo -e "${C_RED}║  tools and/or kernels. By proceeding you accept full liability for any         ║${C_RESET}"
+    echo -e "${C_RED}║  damages or issues caused to your system.                                      ║${C_RESET}"
+    echo -e "${C_RED}║                                                                                ║${C_RESET}"
+    echo -e "${C_RED}║  Ensure you have backups before continuing.                                    ║${C_RESET}"
+    echo -e "${C_RED}╚════════════════════════════════════════════════════════════════════════════════╝${C_RESET}"
     echo
     
-    log_prompt "Do you accept these terms and wish to proceed? (y/n): "
+    log_prompt "$USER Do you understand & fully accept these terms and wish to proceed? (y/n): "
     read -r answer
     if [ "$answer" != "y" ]; then
-        log_warn "Exiting Krilin."
+        log_warn "Exiting Krilin. Thank you for checking it out! $USER"
         exit 0
     fi
-    log_info "Proceeding with Krilin initialization..."
+    log_info "Perfect! Now, Proceeding with initialization..."
 }
 
 # Handle signals for clean exit
 cleanup() {
     echo
-    log_warn "Execution interrupted. Cleaning up..."
+    log_warn "KRILIN Execution interrupted! Cleaning up $USER system..."
     # Kill any background processes
     jobs -p | xargs -r kill &>/dev/null
     exit 1
@@ -440,7 +440,7 @@ main() {
     install_dependencies
     run_krilin "$@"
     
-    log_success "Thank you for using Krilin Security Framework - 0xb0rn3"
+    log_success "Thank you for using Krilin Security Framework $USER ! A star on GITHUB and a share would be HIGHLY appreciated if the tool was useful to you! - 0xb0rn3 "
 }
 
 # Execute main function with all arguments
