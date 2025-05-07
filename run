@@ -397,18 +397,18 @@ check_os_compatibility() {
 
 # Display warning and get confirmation
 display_warning() {
-    echo -e "${C_RED}╔════════════════════════════════════════════════════════════════════════════════╗${C_RESET}"
-    echo -e "${C_RED}║                        WARNING! to $USER                                       ║${C_RESET}"
-    echo -e "${C_RED}║                                                                                ║${C_RESET}"
-    echo -e "${C_RED}║  Krilin will HIGHLY MODIFY your system by installing Kali Linux                ║${C_RESET}"
-    echo -e "${C_RED}║  tools and/or kernels. By proceeding you accept full liability for any         ║${C_RESET}"
-    echo -e "${C_RED}║  damages or issues caused to your system.                                      ║${C_RESET}"
-    echo -e "${C_RED}║                                                                                ║${C_RESET}"
-    echo -e "${C_RED}║  Ensure you have backups before continuing.                                    ║${C_RESET}"
-    echo -e "${C_RED}╚════════════════════════════════════════════════════════════════════════════════╝${C_RESET}"
+    echo -e "${C_RED}╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_RED}║                        WARNING! to $USER                                                                           ║${C_RESET}"
+    echo -e "${C_RED}║                                                                                                                    ║${C_RESET}"
+    echo -e "${C_RED}║  Krilin will HIGHLY MODIFY your system by installing Kali Linux tools and/or kernels from www.kali.org/tools.      ║${C_RESET}"
+    echo -e "${C_RED}║   By proceeding you accept full liability for any  damages or issues caused to your system.                        ║${C_RESET}"
+    echo -e "${C_RED}║  We also strongly assume and expect you KNOW and UNDERSTAND that the this tool is specifically designed for        ║${C_RESET}"
+    echo -e "${C_RED}║      system security engineers and Ethical use only and any misuse is on your own and you take full responsibility ║${C_RESET}"
+    echo -e "${C_RED}║                           Also please ensure you have backups before continuing. Cant stress this enough           ║${C_RESET}"
+    echo -e "${C_RED}╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝${C_RESET}"
     echo
     
-    log_prompt "$USER Do you understand & fully accept these terms and wish to proceed? (y/n): "
+    log_prompt "Do you understand & fully accept these terms and wish to proceed, $USER? (y/n): "
     read -r answer
     if [ "$answer" != "y" ]; then
         log_warn "Exiting Krilin. Thank you for checking it out! $USER"
