@@ -1,4 +1,4 @@
-# Krilin v.02 
+# Krilin v.02 Stable as of KALI.ORG 2025 TOOL DATABASE 
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/0xb0rn3/krilin/main/assets/krilin-logo.png" alt="Krilin Logo" width="200">
