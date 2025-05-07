@@ -12,7 +12,7 @@
 
 ## 🔥 Overview
 
-**Krilin** is a powerful tool designed to transform your Debian-based system into a formidable penetration testing platform by integrating selected Kali Linux tools and kernels. With a dramatic, visually appealing interface, Krilin makes the installation process not just effective, but enjoyable.
+**Krilin** is a powerful tool designed to transform your Debian-based system into a formidable penetration testing platform by integrating selected Kali Linux tools and kernels SAFELY with a dramatic, visually appealing interface, Krilin makes the installation process not just effective, but enjoyable whilst still preserving your user environment and not rebranding your system into KALI LINUX.
 
 ## ✨ Features
 
