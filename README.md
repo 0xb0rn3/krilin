@@ -1,34 +1,4 @@
-## 🧠 How Krilin Works
-
-Krilin operates through a sophisticated multi-stage process:
-
-1. **System Analysis**: First, Krilin performs comprehensive system detection to identify your OS details, architecture, kernel version, CPU, RAM, and Debian version to ensure compatibility.
-
-2. **Environment Preparation**: Before any installations, Krilin:
-   - Verifies root privileges
-   - Ensures all required dependencies are installed
-   - Fixes any existing package management issues
-   - Creates necessary configurations to prevent conflicts
-
-3. **Repository Management**: When installing tools, Krilin:
-   - Downloads and installs the official Kali archive keyring
-   - Creates temporary repository configuration files
-   - Updates package lists with proper error handling
-   - Implements APT preferences to prevent unwanted package installations
-
-4. **Installation Process**: During installation, Krilin:
-   - Displays progress with dynamic visual feedback
-   - Handles package installations with multiple retry attempts
-   - Resolves dependencies and conflicts automatically
-   - Implements batch processing for large installations to prevent system overload
-
-5. **System Cleanup**: After completing installations, Krilin:
-   - Removes temporary repository configurations
-   - Updates package lists to reflect system changes
-   - Runs comprehensive package management fixes
-   - Ensures your system remains stable and clean
-
-This approach allows Krilin to integrate powerful security tools while maintaining system integrity and stability.# Krilin v0.2
+# Krilin v0.2
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/0xb0rn3/krilin/main/assets/krilin-logo.png" alt="Krilin Logo" width="200">
@@ -101,6 +71,38 @@ Select from the available categories:
 8. Debian Backports Kernel - Install the latest kernel from Debian Backports
 9. Kali Linux Kernel - Install the specialized Kali Linux kernel
 10. Complete Kali Linux Toolkit + Kernel - Install all available Kali hacking tools (10+ GB)
+
+## 🧠 How Krilin Works
+
+Krilin operates through a sophisticated multi-stage process:
+
+1. **System Analysis**: First, Krilin performs comprehensive system detection to identify your OS details, architecture, kernel version, CPU, RAM, and Debian version to ensure compatibility.
+
+2. **Environment Preparation**: Before any installations, Krilin:
+   - Verifies root privileges
+   - Ensures all required dependencies are installed
+   - Fixes any existing package management issues
+   - Creates necessary configurations to prevent conflicts
+
+3. **Repository Management**: When installing tools, Krilin:
+   - Downloads and installs the official Kali archive keyring
+   - Creates temporary repository configuration files
+   - Updates package lists with proper error handling
+   - Implements APT preferences to prevent unwanted package installations
+
+4. **Installation Process**: During installation, Krilin:
+   - Displays progress with dynamic visual feedback
+   - Handles package installations with multiple retry attempts
+   - Resolves dependencies and conflicts automatically
+   - Implements batch processing for large installations to prevent system overload
+
+5. **System Cleanup**: After completing installations, Krilin:
+   - Removes temporary repository configurations
+   - Updates package lists to reflect system changes
+   - Runs comprehensive package management fixes
+   - Ensures your system remains stable and clean
+
+This approach allows Krilin to integrate powerful security tools while maintaining system integrity and stability.
 
 ## ⚙️ System Requirements
 
