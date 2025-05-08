@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/0xb0rn3/krilin/main/assets/krilin-logo.png" alt="Krilin Logo" width="200">
   <h3>Weaponize Your Debian System with Kali Linux Arsenal</h3>
   
-  ![Version](https://img.shields.io/badge/Version-0.2-Stable-success.svg)](https://github.com/0xb0rn3/bkygo) 
+  ![Version](https://img.shields.io/badge/Version-0.2-Stable-success.svg)
   ![License](https://img.shields.io/badge/license-MIT-blue)
   ![Python Version](https://img.shields.io/badge/python-3.6%2B-green)
   ![Platform](https://img.shields.io/badge/platform-Debian-red)
