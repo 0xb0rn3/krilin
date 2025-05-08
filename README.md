@@ -1,28 +1,28 @@
-# Krilin v.02 Stable as of KALI.ORG 2025 TOOL DATABASE 
+# Krilin v0.2
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/0xb0rn3/krilin/main/assets/krilin-logo.png" alt="Krilin Logo" width="200">
   <h3>Weaponize Your Debian System with Kali Linux Arsenal</h3>
   
-  ![Version](https://img.shields.io/badge/Version-0.2-Stable-success.svg)
-  ![License](https://img.shields.io/badge/license-MIT-blue)
-  ![Python Version](https://img.shields.io/badge/python-3.6%2B-green)
-  ![Platform](https://img.shields.io/badge/platform-Debian-red)
-  ![Development Status](https://img.shields.io/badge/status-active-brightgreen)
+  ![Version](https://img.shields.io/badge/Version-0.2-success.svg)
+  ![Status](https://img.shields.io/badge/Status-Stable-success.svg)
+  ![License](https://img.shields.io/badge/License-MIT-blue.svg)
+  ![Python](https://img.shields.io/badge/Python-3.6+-green.svg)
+  ![Platform](https://img.shields.io/badge/Platform-Debian-red.svg)
 </div>
 
 ## 🔥 Overview
 
-**Krilin** is a powerful tool designed to transform your Debian-based system into a formidable penetration testing platform by integrating selected Kali Linux tools and kernels SAFELY with a dramatic, visually appealing interface, Krilin makes the installation process not just effective, but enjoyable whilst still preserving your user environment and not rebranding your system into KALI LINUX.
+**Krilin** transforms your Debian-based system into a powerful penetration testing platform by seamlessly integrating selected Kali Linux tools and kernels. It preserves your user environment without rebranding your system into Kali Linux, providing a safe and efficient way to access professional security tools.
 
-## ✨ Features
+## ✨ Key Features
 
-- **🛠️ Comprehensive Tool Categories** - Access a wide range of security tools organized by purpose
-- **🔍 System Detection** - Automatically identifies OS, architecture, and hardware details
-- **🚀 Dramatic Visual Experience** - Engaging color-coded interface with dynamic text effects
-- **🔧 Kernel Management** - Easily install specialized kernels from Kali or Debian Backports
-- **🔐 Secure Repository Handling** - Properly manages Kali repositories and keys for maximum security
-- **🧹 Clean Operation** - Automatically removes repositories after installation to maintain system integrity
+- **🛠️ Comprehensive Tool Selection**: Access a wide range of security tools organized by purpose
+- **🔍 Intelligent System Detection**: Automatically identifies OS, architecture, and hardware details
+- **🚀 Modern User Interface**: Clean, color-coded interface with intuitive navigation
+- **🔧 Advanced Kernel Management**: Easily install specialized kernels from Kali or Debian Backports
+- **🔐 Secure Repository Integration**: Properly manages Kali repositories and keys for maximum security
+- **🧹 System Integrity Protection**: Automatically removes repositories after installation to maintain system stability
 
 ## 📷 Screenshots
 
@@ -55,6 +55,7 @@ sudo ./run
 ```
 
 Select from the available categories:
+
 1. Information Gathering
 2. Vulnerability Analysis
 3. Exploitation Tools
@@ -64,35 +65,35 @@ Select from the available categories:
 7. Individual Kali Tools
 8. Debian Backports Kernel
 9. Kali Linux Kernel
-10. ALL KLAI LINUX TOOLS + KERNEL INCLUDED
-0. Exit
-   
-## ⚙️ Requirements
+10. Complete Kali Linux Toolkit + Kernel
+
+## ⚙️ System Requirements
 
 - Debian-based system (Debian, Ubuntu, Linux Mint, etc.)
 - Python 3.6 or higher
 - Root privileges (sudo)
-- Internet connection
+- Active internet connection
 
-## 🔐 Security Note
+## 🔐 Security Considerations
 
 Krilin temporarily adds Kali Linux repositories to your system during tool installation. These repositories are automatically removed after installation to maintain system integrity. The script uses the official Kali archive keyring for maximum security.
 
-## ⚠️ Warning
+## ⚠️ Important Warning
 
 Installing certain tools or kernels may affect system stability. Always understand the implications before installing, especially:
+
 - Kali Linux kernel on Debian systems
 - Full penetration testing toolsets on production machines
 
 ## 🤝 Contributing
 
-Contributions are welcome and appreciated! Please feel free to submit a Pull Request.
+Contributions are welcome and appreciated! Please follow these steps:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a pull request
 
 ## 👨‍💻 Author
 
@@ -100,9 +101,9 @@ Contributions are welcome and appreciated! Please feel free to submit a Pull Req
 
 ## 🙏 Acknowledgements
 
-- [Kali Linux](https://www.kali.org/) for their amazing security tools
+- [Kali Linux](https://www.kali.org/) for their exceptional security tools
 - [Debian](https://www.debian.org/) for the stable base system
-- All open-source security tool developers
+- All open-source security tool developers who make this project possible
 
 ---
 
