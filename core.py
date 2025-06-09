@@ -32,6 +32,8 @@ KALI_TOOLS_URL = "https://www.kali.org/tools/all-tools/"
 # Version info
 VERSION = "0.2 Stable"
 
+# DEV
+DEVINFO = "By: 0xbv1(0xb0rn3) IG: theehiv3"
 # Categories including tools and kernels
 CATEGORIES = {
     "1": ("Information Gathering", ["nmap", "kali-menu", "dnsrecon", "theharvester", "recon-ng"], False, "kali"),
@@ -64,7 +66,7 @@ def display_banner():
 {CYAN}{BOLD}╚═╝  ╚═╝{RED}╚═╝  ╚═╝{YELLOW}╚═╝{GREEN}╚══════╝{BLUE}╚═╝{MAGENTA}╚═╝  ╚═══╝{NORMAL}
                                                  
 {BLUE}{BOLD}╔══════════════════════════════════╗{NORMAL}
-{BLUE}{BOLD}║{GREEN} KRILIN - TOOLS AND KERNEL ARSENAL {BLUE}║{NORMAL}
+{BLUE}{BOLD}║{GREEN} KRILIN - TOOLS AND KERNEL ARSENAL {DEVINFO} {BLUE}║{NORMAL}
 {BLUE}{BOLD}║{GREEN} Pentest Machine Setup v{VERSION}           {BLUE}║{NORMAL}
 {BLUE}{BOLD}╚══════════════════════════════════╝{NORMAL}
 """
