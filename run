@@ -78,7 +78,7 @@ print_banner() {
     echo -e "${C_BLUE}║                                                           ║${C_RESET}"
     echo -e "${C_BLUE}║   ${C_GREEN}Security Framework v0.2 Latest Stable${C_BLUE}                       ║${C_RESET}"
     echo -e "${C_BLUE}║   ${C_WHITE}\"Transform your Debian system into a security powerhouse\"${C_BLUE}  ║${C_RESET}"
-    echo -e "${C_BLUE}║                                                           ║${C_RESET}"
+    echo -e "${C_BLUE}║  Engineered by 0xbv1(0xb0rn3) IG: theehiv3                                        ║${C_RESET}"
     echo -e "${C_BLUE}╚═══════════════════════════════════════════════════════════╝${C_RESET}"
     echo
 }
