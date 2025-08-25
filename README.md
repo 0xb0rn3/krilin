@@ -34,7 +34,7 @@ Krilin is an advanced security framework that seamlessly integrates Kali Linux's
 
 ```bash
 # One-line installation with automatic dependency fixing
-git clone https://github.com/0xb0rn3/krilin.git && cd krilin && sudo ./run
+git clone https://github.com/0xb0rn3/krilin.git && cd krilin && chmod +x && sudo ./run
 ```
 
 > **Note**: The script will automatically install all missing dependencies including `bc`, `wget`, `curl`, and Python packages.
