@@ -31,7 +31,7 @@ except ImportError:
     BS4_AVAILABLE = False
     print("[WARNING] BeautifulSoup module not available. Web scraping features disabled.")
 
-# Color and style codes for dramatic vibe
+# Color and style codes for tactical interface
 RED = '\033[91m'
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
@@ -122,32 +122,32 @@ def check_system_dependencies():
             print(f"{RED}[!] Failed to install system dependencies: {e}{NORMAL}")
             print(f"{YELLOW}[!] You may need to manually install: {' '.join(missing_tools)}{NORMAL}")
 
-def dramatic_print(text, color=GREEN, delay=0.01):
-    """Print text with dramatic effect."""
+def tactical_print(text, color=GREEN, delay=0.01):
+    """Print text with tactical effect."""
     for char in text:
         print(f"{color}{char}{NORMAL}", end='', flush=True)
         time.sleep(delay)
     print()
 
 def display_banner():
-    """Display a dramatic ASCII art banner."""
+    """Display a tactical ASCII art banner."""
     banner = f"""
-{CYAN}{BOLD}██╗  ██╗{RED}██████╗ {YELLOW}██╗{GREEN}██╗     {BLUE}██╗{MAGENTA}███╗   ██╗{NORMAL}
-{CYAN}{BOLD}██║ ██╔╝{RED}██╔══██╗{YELLOW}██║{GREEN}██║     {BLUE}██║{MAGENTA}████╗  ██║{NORMAL}
-{CYAN}{BOLD}█████╔╝ {RED}██████╔╝{YELLOW}██║{GREEN}██║     {BLUE}██║{MAGENTA}██╔██╗ ██║{NORMAL}
-{CYAN}{BOLD}██╔═██╗ {RED}██╔══██╗{YELLOW}██║{GREEN}██║     {BLUE}██║{MAGENTA}██║╚██╗██║{NORMAL}
-{CYAN}{BOLD}██║  ██╗{RED}██║  ██║{YELLOW}██║{GREEN}███████╗{BLUE}██║{MAGENTA}██║ ╚████║{NORMAL}
-{CYAN}{BOLD}╚═╝  ╚═╝{RED}╚═╝  ╚═╝{YELLOW}╚═╝{GREEN}╚══════╝{BLUE}╚═╝{MAGENTA}╚═╝  ╚═══╝{NORMAL}
+{CYAN}{BOLD}█▄▄ █▄▄{RED}█████▄ {YELLOW}█▄█{GREEN}█▄█     {BLUE}█▄█{MAGENTA}████   ██▄{NORMAL}
+{CYAN}{BOLD}█▄█ █▄█{RED}█▄▄▄██▄{YELLOW}█▄█{GREEN}█▄█     {BLUE}█▄█{MAGENTA}█▄██▄  ██▄{NORMAL}
+{CYAN}{BOLD}█████▄▄ {RED}███████▄{YELLOW}█▄█{GREEN}█▄█     {BLUE}█▄█{MAGENTA}█▄▄██▄ ██▄{NORMAL}
+{CYAN}{BOLD}██▄▄██▄ {RED}██▄▄▄██▄{YELLOW}█▄█{GREEN}█▄█     {BLUE}█▄█{MAGENTA}██▄▄███▄██▄{NORMAL}
+{CYAN}{BOLD}██▄  ██▄{RED}██▄  ██▄{YELLOW}█▄█{GREEN}███████▄{BLUE}█▄█{MAGENTA}██▄ ▄████▄{NORMAL}
+{CYAN}{BOLD}▄▄▄  ▄▄▄{RED}▄▄▄  ▄▄▄{YELLOW}▄▄▄{GREEN}▄▄▄▄▄▄▄▄{BLUE}▄▄▄{MAGENTA}▄▄▄  ▄▄▄▄▄{NORMAL}
                                                  
-{BLUE}{BOLD}╔═════════════════════════════════════════════════╗{NORMAL}
-{BLUE}{BOLD}║{GREEN} KRILIN - TOOLS AND KERNEL ARSENAL {DEVINFO} {BLUE}║{NORMAL}
-{BLUE}{BOLD}║{GREEN} Pentest Machine Setup v{VERSION}                {BLUE}║{NORMAL}
-{BLUE}{BOLD}╚═════════════════════════════════════════════════╝{NORMAL}
+{BLUE}{BOLD}╔═══════════════════════════════════════════════════╗{NORMAL}
+{BLUE}{BOLD}║{GREEN} KRILIN - TACTICAL SECURITY ARSENAL {DEVINFO} {BLUE}║{NORMAL}
+{BLUE}{BOLD}║{GREEN} Combat-Ready Framework v{VERSION}                {BLUE}║{NORMAL}
+{BLUE}{BOLD}╚═══════════════════════════════════════════════════╝{NORMAL}
 """
     print(banner)
 
 def detect_system():
-    """Detect and display system information with enhanced error handling."""
+    """Detect and display system information with tactical readout."""
     os_name = platform.system()
     os_release = platform.release()
     os_version = platform.version()
@@ -194,7 +194,7 @@ def detect_system():
     except:
         disk_info = "Unknown"
     
-    print(f"\n{BOLD}{BLUE}[*] System Detection Results:{NORMAL}")
+    print(f"\n{BOLD}{BLUE}[*] System Reconnaissance Complete:{NORMAL}")
     print(f"{BOLD}{GREEN}[+] OS:{NORMAL} {os_name} {os_release}")
     print(f"{BOLD}{GREEN}[+] Architecture:{NORMAL} {machine_arch}")
     print(f"{BOLD}{GREEN}[+] Kernel:{NORMAL} {kernel_info}")
@@ -222,24 +222,24 @@ def detect_system():
         pass
     
     if not is_debian:
-        print(f"{BOLD}{RED}[!] Warning: This script is designed for Debian-based systems.{NORMAL}")
-        answer = input(f"{BOLD}{YELLOW}[?] Continue anyway? (y/n):{NORMAL} ").lower()
+        print(f"{BOLD}{RED}[!] Warning: This system is not Debian-based.{NORMAL}")
+        answer = input(f"{BOLD}{YELLOW}[?] Continue deployment anyway? (y/n):{NORMAL} ").lower()
         if answer != 'y':
             sys.exit(1)
     
     # Check for required disk space
     if disk_info != "Unknown" and disk_free < 5:
-        print(f"{BOLD}{YELLOW}[!] Warning: Low disk space ({disk_free:.1f}GB free).{NORMAL}")
-        print(f"{BOLD}{YELLOW}[!] Some installations may require 10+ GB of space.{NORMAL}")
+        print(f"{BOLD}{YELLOW}[!] Warning: Low ammunition storage ({disk_free:.1f}GB free).{NORMAL}")
+        print(f"{BOLD}{YELLOW}[!] Some deployments may require 10+ GB of storage.{NORMAL}")
 
 def check_root():
     """Ensure the script runs with root privileges."""
     if os.geteuid() != 0:
-        print(f"{RED}{BOLD}[!] This script must be run as root. Use 'sudo'.{NORMAL}")
+        print(f"{RED}{BOLD}[!] This operation requires root access. Use 'sudo'.{NORMAL}")
         sys.exit(1)
 
 def get_debian_codename():
-    """Retrieve Debian codename from /etc/os-release with enhanced error handling."""
+    """Retrieve Debian codename from /etc/os-release with tactical precision."""
     try:
         # Try /etc/os-release first
         if os.path.exists("/etc/os-release"):
@@ -269,7 +269,7 @@ def get_debian_codename():
     if codename:
         return codename
     else:
-        print(f"{RED}{BOLD}[!] Codename required for backports. Exiting.{NORMAL}")
+        print(f"{RED}{BOLD}[!] Codename required for backports. Mission aborted.{NORMAL}")
         sys.exit(1)
 
 def add_kali_keyring():
@@ -282,7 +282,7 @@ def add_kali_keyring():
     
     keyring_file = "/tmp/kali-archive-keyring.deb"
     
-    print(f"{CYAN}{BOLD}[*] Downloading and installing Kali archive keyring...{NORMAL}")
+    print(f"{CYAN}{BOLD}[*] Acquiring Kali archive keyring...{NORMAL}")
     
     for url in keyring_urls:
         try:
@@ -309,18 +309,18 @@ def add_kali_keyring():
             if os.path.exists(keyring_file):
                 os.remove(keyring_file)
             
-            print(f"{GREEN}{BOLD}[+] Kali archive keyring installed successfully.{NORMAL}")
+            print(f"{GREEN}{BOLD}[+] Kali archive keyring deployed successfully.{NORMAL}")
             return True
             
         except Exception as e:
             continue
     
-    print(f"{RED}{BOLD}[!] Failed to install Kali keyring from all sources.{NORMAL}")
+    print(f"{RED}{BOLD}[!] Failed to deploy Kali keyring from all sources.{NORMAL}")
     print(f"{YELLOW}[!] Continuing without official Kali keyring. This may cause trust issues.{NORMAL}")
     return False
 
 def add_repo(repo_type):
-    """Add a temporary repository based on type."""
+    """Add a tactical repository based on type."""
     print(f"{CYAN}{BOLD}[*] Adding {repo_type} repository...{NORMAL}")
     
     if repo_type == "kali":
@@ -332,9 +332,9 @@ def add_repo(repo_type):
         try:
             with open(repo_file, "w") as f:
                 f.write(f"{KALI_REPO}\n")
-            print(f"{GREEN}[+] Kali repository added to {repo_file}{NORMAL}")
+            print(f"{GREEN}[+] Kali repository deployed to {repo_file}{NORMAL}")
         except Exception as e:
-            print(f"{RED}[!] Failed to add Kali repository: {e}{NORMAL}")
+            print(f"{RED}[!] Failed to deploy Kali repository: {e}{NORMAL}")
             return False
             
     elif repo_type == "backports":
@@ -343,30 +343,30 @@ def add_repo(repo_type):
         try:
             with open(repo_file, "w") as f:
                 f.write(f"deb http://deb.debian.org/debian {codename}-backports main contrib non-free non-free-firmware\n")
-            print(f"{GREEN}[+] Backports repository added to {repo_file}{NORMAL}")
+            print(f"{GREEN}[+] Backports repository deployed to {repo_file}{NORMAL}")
         except Exception as e:
-            print(f"{RED}[!] Failed to add backports repository: {e}{NORMAL}")
+            print(f"{RED}[!] Failed to deploy backports repository: {e}{NORMAL}")
             return False
     
     # Update package lists
-    print(f"{CYAN}{BOLD}[*] Updating package lists...{NORMAL}")
+    print(f"{CYAN}{BOLD}[*] Updating package intelligence...{NORMAL}")
     try:
         subprocess.run(["apt-get", "update"], check=True, timeout=120)
-        print(f"{GREEN}{BOLD}[+] Repository added and package list updated.{NORMAL}")
+        print(f"{GREEN}{BOLD}[+] Repository deployed and package intelligence updated.{NORMAL}")
         return True
     except subprocess.CalledProcessError:
-        print(f"{RED}{BOLD}[!] Failed to update package lists. Continuing anyway...{NORMAL}")
+        print(f"{RED}{BOLD}[!] Failed to update package intelligence. Continuing operation...{NORMAL}")
         return False
     except subprocess.TimeoutExpired:
-        print(f"{RED}{BOLD}[!] Update timed out. Continuing anyway...{NORMAL}")
+        print(f"{RED}{BOLD}[!] Update timed out. Continuing operation...{NORMAL}")
         return False
 
 def proactively_remove_rpcbind():
-    """Proactively remove rpcbind before any installations to prevent issues."""
-    print(f"{CYAN}{BOLD}[*] Proactively handling rpcbind package to prevent installation issues...{NORMAL}")
+    """Proactively remove rpcbind before any installations to prevent tactical conflicts."""
+    print(f"{CYAN}{BOLD}[*] Neutralizing rpcbind package to prevent deployment conflicts...{NORMAL}")
     
     if check_for_rpcbind():
-        print(f"{YELLOW}{BOLD}[!] rpcbind detected - removing to prevent installation issues...{NORMAL}")
+        print(f"{YELLOW}{BOLD}[!] rpcbind detected - removing to prevent deployment conflicts...{NORMAL}")
         
         # Stop services
         services = ["rpcbind", "rpcbind.socket", "rpcbind.target"]
@@ -380,14 +380,14 @@ def proactively_remove_rpcbind():
         # Remove package
         try:
             subprocess.run(["apt-get", "remove", "--purge", "-y", "rpcbind"], check=False, stderr=subprocess.DEVNULL)
-            print(f"{GREEN}{BOLD}[+] rpcbind removed.{NORMAL}")
+            print(f"{GREEN}{BOLD}[+] rpcbind neutralized.{NORMAL}")
         except:
             pass
     
     create_rpcbind_diversion()
 
 def create_rpcbind_diversion():
-    """Create a diversion for rpcbind to prevent its installation."""
+    """Create a tactical diversion for rpcbind to prevent its installation."""
     try:
         # Create dummy directory
         dummy_dir = "/tmp/dummy-rpcbind"
@@ -414,7 +414,7 @@ def create_rpcbind_diversion():
         if not os.path.exists("/usr/sbin/rpcbind"):
             shutil.copy2(rpcbind_path, "/usr/sbin/rpcbind")
         
-        print(f"{GREEN}{BOLD}[+] Created diversions to prevent rpcbind issues.{NORMAL}")
+        print(f"{GREEN}{BOLD}[+] Created tactical diversions to prevent rpcbind conflicts.{NORMAL}")
         
         # Clean up
         shutil.rmtree(dummy_dir, ignore_errors=True)
@@ -437,8 +437,8 @@ def check_for_rpcbind():
         return False
 
 def fix_dpkg_issues_thoroughly():
-    """Fix package management issues thoroughly."""
-    print(f"{CYAN}{BOLD}[*] Fixing package management issues...{NORMAL}")
+    """Fix package management issues with tactical precision."""
+    print(f"{CYAN}{BOLD}[*] Running system maintenance...{NORMAL}")
     
     try:
         # Remove lock files
@@ -469,7 +469,7 @@ def fix_dpkg_issues_thoroughly():
         subprocess.run(["dpkg", "--configure", "-a"], check=False, stderr=subprocess.DEVNULL)
         
         # Fix broken dependencies
-        print(f"{CYAN}[*] Fixing broken dependencies...{NORMAL}")
+        print(f"{CYAN}[*] Repairing broken dependencies...{NORMAL}")
         subprocess.run(["apt-get", "install", "-f", "-y"], check=False, stderr=subprocess.DEVNULL)
         
         # Clean package cache
@@ -478,20 +478,20 @@ def fix_dpkg_issues_thoroughly():
         subprocess.run(["apt-get", "autoclean"], check=False)
         
         # Update with fix-missing
-        print(f"{CYAN}[*] Updating package lists with fix-missing...{NORMAL}")
+        print(f"{CYAN}[*] Updating package intelligence with fix-missing...{NORMAL}")
         subprocess.run(["apt-get", "update", "--fix-missing"], check=False)
         
         # Remove unnecessary packages
         print(f"{CYAN}[*] Removing unnecessary packages...{NORMAL}")
         subprocess.run(["apt-get", "autoremove", "-y"], check=False, stderr=subprocess.DEVNULL)
         
-        print(f"{GREEN}{BOLD}[+] Package management issues fixed.{NORMAL}")
+        print(f"{GREEN}{BOLD}[+] System maintenance complete.{NORMAL}")
         
     except Exception as e:
-        print(f"{RED}{BOLD}[!] Error during package fixing: {e}{NORMAL}")
+        print(f"{RED}{BOLD}[!] Error during system maintenance: {e}{NORMAL}")
 
 def create_apt_preferences():
-    """Create proper APT preferences to prevent rpcbind installation."""
+    """Create proper APT preferences to prevent problematic package installation."""
     prefs_dir = "/etc/apt/preferences.d"
     os.makedirs(prefs_dir, exist_ok=True)
     
@@ -510,7 +510,7 @@ def create_apt_preferences():
         print(f"{YELLOW}[!] Could not create APT preferences: {e}{NORMAL}")
 
 def remove_repo(repo_type):
-    """Remove the temporary repository."""
+    """Remove the tactical repository."""
     print(f"{CYAN}{BOLD}[*] Cleaning up {repo_type} repository...{NORMAL}")
     
     # Fix any issues first
@@ -534,32 +534,32 @@ def remove_repo(repo_type):
     # Update package lists
     try:
         subprocess.run(["apt-get", "update"], check=True, timeout=60)
-        print(f"{GREEN}{BOLD}[+] Repository removed and package list updated.{NORMAL}")
+        print(f"{GREEN}{BOLD}[+] Repository removed and package intelligence updated.{NORMAL}")
     except:
         print(f"{YELLOW}{BOLD}[!] Warning: Cleanup incomplete. You may need to manually fix your repositories.{NORMAL}")
 
 def select_specific_tools():
-    """Allow the user to select specific Kali tools."""
-    print(f"{CYAN}{BOLD}[*] Enter the names of Kali tools you want to install (separated by spaces):{NORMAL}")
+    """Allow the user to select specific tactical tools."""
+    print(f"{CYAN}{BOLD}[*] Enter the names of tactical tools you want to deploy (separated by spaces):{NORMAL}")
     print(f"{YELLOW}{BOLD}[!] Example: nmap dirb nikto sqlmap metasploit-framework{NORMAL}")
-    print(f"{GREEN}[*] Popular tools: {NORMAL}")
+    print(f"{GREEN}[*] Popular weapons: {NORMAL}")
     print(f"    - Network: nmap, masscan, zmap, netcat")
     print(f"    - Web: burpsuite, zaproxy, dirb, gobuster, ffuf")
     print(f"    - Exploitation: metasploit-framework, exploitdb, searchsploit")
     print(f"    - Password: hydra, john, hashcat, medusa")
     print(f"    - Wireless: aircrack-ng, wifite, reaver, bully")
     
-    tools_input = input(f"{BOLD}{GREEN}[?] Tools to install:{NORMAL} ")
+    tools_input = input(f"{BOLD}{GREEN}[?] Tools to deploy:{NORMAL} ")
     
     if tools_input.strip():
         return tools_input.strip().split()
     else:
-        print(f"{RED}{BOLD}[!] No tools specified. Returning to menu.{NORMAL}")
+        print(f"{RED}{BOLD}[!] No tools specified. Returning to command center.{NORMAL}")
         return []
 
 def fetch_all_kali_tools():
-    """Fetch all available Kali tools from the website or fallback methods."""
-    print(f"{CYAN}{BOLD}[*] Fetching list of all Kali tools...{NORMAL}")
+    """Fetch all available Kali tools from the arsenal database or fallback methods."""
+    print(f"{CYAN}{BOLD}[*] Fetching complete arsenal from Kali database...{NORMAL}")
     
     # Predefined comprehensive tool list as fallback
     fallback_tools = [
@@ -631,429 +631,16 @@ def fetch_all_kali_tools():
                 for element in tools_sections:
                     text = element.get_text().strip()
                     # Look for package-like names
-                    if re.match(r'^[a-z0-9][a-z0-9\-\.]+$', text) and len(text) > 2:
-                
-                if tool_packages:
-                    # Combine with fallback list
-                    all_tools = list(set(tool_packages + fallback_tools))
-                    print(f"{GREEN}{BOLD}[+] Found {len(all_tools)} Kali tools.{NORMAL}")
-                    return all_tools
-        except Exception as e:
-            print(f"{YELLOW}[!] Could not fetch from website: {e}{NORMAL}")
-    
-    # Try apt-cache method
-    try:
-        add_repo("kali")
-        result = subprocess.run(["apt-cache", "search", "kali-"], 
-                              stdout=subprocess.PIPE, text=True, check=False)
-        
-        if result.stdout:
-            apt_tools = []
-            for line in result.stdout.split("\n"):
-                if line.strip():
-                    package_name = line.split(" - ")[0].strip()
-                    if package_name:
-                        apt_tools.append(package_name)
-            
-            if apt_tools:
-                all_tools = list(set(apt_tools + fallback_tools))
-                print(f"{GREEN}{BOLD}[+] Found {len(all_tools)} tools from repository.{NORMAL}")
-                return all_tools
-    except:
-        pass
-    
-    # Return fallback list
-    print(f"{YELLOW}[!] Using predefined tool list.{NORMAL}")
-    print(f"{GREEN}{BOLD}[+] {len(fallback_tools)} tools available.{NORMAL}")
-    return fallback_tools
-
-def install_all_kali_tools():
-    """Install all available Kali tools with a strict warning."""
-    print(f"{MAGENTA}{BOLD}[*] Preparing to install all Kali hacking tools...{NORMAL}")
-    
-    tool_packages = fetch_all_kali_tools()
-    
-    if not tool_packages:
-        print(f"{RED}{BOLD}[!] Could not retrieve the list of Kali tools. Aborting.{NORMAL}")
-        return
-    
-    print(f"{CYAN}{BOLD}[*] Found {len(tool_packages)} tools to install.{NORMAL}")
-    
-    # Display warning
-    print(f"\n{RED}{BLINK}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}              ⚠️  CRITICAL WARNING ⚠️{NORMAL}")
-    print(f"{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}Installing ALL Kali tools will:{NORMAL}")
-    print(f"{YELLOW}  • Download and install 10+ GB of software{NORMAL}")
-    print(f"{YELLOW}  • Take several hours to complete{NORMAL}")
-    print(f"{YELLOW}  • May cause system instability{NORMAL}")
-    print(f"{YELLOW}  • Could create software conflicts{NORMAL}")
-    print(f"{YELLOW}  • Consume significant system resources{NORMAL}")
-    print(f"{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}STRONGLY RECOMMENDED:{NORMAL} Use option 7 to install")
-    print(f"individual packages instead of everything at once.")
-    print(f"{RED}{BOLD}{'='*60}{NORMAL}\n")
-    
-    confirmation = input(f"{BOLD}{RED}[?] Type 'I UNDERSTAND THE RISKS' to proceed or 'n' to cancel:{NORMAL} ").strip()
-    if confirmation != "I UNDERSTAND THE RISKS":
-        print(f"{YELLOW}{BOLD}[!] Installation cancelled. Good choice!{NORMAL}")
-        print(f"{GREEN}[*] Consider using option 7 to install specific tools.{NORMAL}")
-        return
-    
-    # Ask about batch installation
-    batch_option = input(f"{BOLD}{YELLOW}[?] Install in batches (recommended) or all at once? (b/a):{NORMAL} ").lower()
-    
-    try:
-        # Prepare system
-        proactively_remove_rpcbind()
-        create_apt_preferences()
-        add_repo("kali")
-        fix_dpkg_issues_thoroughly()
-        
-        # Separate metapackages and individual tools
-        metapackages = [pkg for pkg in tool_packages if pkg.startswith("kali-")]
-        individual_tools = [pkg for pkg in tool_packages if not pkg.startswith("kali-")]
-        
-        failed_packages = []
-        installed_count = 0
-        
-        # Install metapackages first
-        if metapackages:
-            print(f"\n{CYAN}{BOLD}[*] Installing Kali metapackages...{NORMAL}")
-            for meta in metapackages[:5]:  # Limit metapackages to avoid conflicts
-                if install_with_retries(meta, repo_type="kali"):
-                    installed_count += 1
-                else:
-                    failed_packages.append(meta)
-        
-        # Install individual tools
-        if batch_option == 'b':
-            batch_size = 10
-            total_batches = (len(individual_tools) + batch_size - 1) // batch_size
-            
-            for i in range(0, len(individual_tools), batch_size):
-                batch = individual_tools[i:i+batch_size]
-                batch_num = i // batch_size + 1
-                
-                print(f"\n{CYAN}{BOLD}[*] Installing batch {batch_num}/{total_batches}:{NORMAL}")
-                print(f"    {', '.join(batch)}")
-                
-                for package in batch:
-                    if install_with_retries(package, repo_type="kali"):
-                        installed_count += 1
-                    else:
-                        failed_packages.append(package)
-                
-                # Progress update
-                progress = (i + len(batch)) * 100 // len(individual_tools)
-                print(f"{GREEN}[*] Progress: {progress}% complete ({installed_count} tools installed){NORMAL}")
-        else:
-            # Install all at once (not recommended)
-            print(f"\n{CYAN}{BOLD}[*] Installing all tools (this will take a long time)...{NORMAL}")
-            for idx, package in enumerate(individual_tools):
-                print(f"{CYAN}[*] Installing {package} ({idx+1}/{len(individual_tools)})...{NORMAL}")
-                if install_with_retries(package, repo_type="kali"):
-                    installed_count += 1
-                else:
-                    failed_packages.append(package)
-        
-        # Report results
-        print(f"\n{BOLD}{BLUE}{'='*60}{NORMAL}")
-        print(f"{BOLD}{GREEN}Installation Summary:{NORMAL}")
-        print(f"  • Tools installed successfully: {installed_count}")
-        print(f"  • Tools failed: {len(failed_packages)}")
-        
-        if failed_packages:
-            print(f"\n{YELLOW}{BOLD}[!] The following packages failed to install:{NORMAL}")
-            for pkg in failed_packages[:20]:  # Show first 20 failures
-                print(f"    - {pkg}")
-            if len(failed_packages) > 20:
-                print(f"    ... and {len(failed_packages) - 20} more")
-            
-            # Save failed packages to file
-            with open("/tmp/krilin_failed_packages.txt", "w") as f:
-                f.write("\n".join(failed_packages))
-            print(f"{YELLOW}[*] Complete list saved to /tmp/krilin_failed_packages.txt{NORMAL}")
-        else:
-            print(f"{GREEN}{BOLD}[+] All packages successfully installed!{NORMAL}")
-            print(f"{GREEN}[+] Your complete Kali arsenal is ready.{NORMAL}")
-    
-    except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Installation interrupted by user.{NORMAL}")
-    except Exception as e:
-        print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
-    finally:
-        fix_dpkg_issues_thoroughly()
-        remove_repo("kali")
-
-def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
-    """Install a package with retries on failure."""
-    for attempt in range(1, max_retries + 1):
-        try:
-            # Skip if already installed
-            check_cmd = ["dpkg", "-l", package]
-            result = subprocess.run(check_cmd, capture_output=True, text=True, check=False)
-            if "ii  " + package in result.stdout:
-                print(f"{GREEN}[+] {package} is already installed{NORMAL}")
-                return True
-            
-            print(f"{CYAN}[*] Installing {package} (attempt {attempt}/{max_retries})...{NORMAL}")
-            
-            # Build install command
-            if repo_type == "backports":
-                codename = get_debian_codename()
-                cmd = ['apt-get', 'install', '-y', '-qq', '-t', f"{codename}-backports", package]
-            else:
-                cmd = ['apt-get', 'install', '-y', '-qq', '--no-install-recommends', package]
-            
-            # Try installation
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-            
-            if result.returncode == 0:
-                print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
-                return True
-            else:
-                raise subprocess.CalledProcessError(result.returncode, cmd)
-                
-        except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:
-            print(f"{YELLOW}[!] Attempt {attempt} failed for {package}{NORMAL}")
-            
-            if attempt < max_retries:
-                # Try to fix issues before next attempt
-                fix_dpkg_issues_thoroughly()
-                time.sleep(2)
-            else:
-                # Last attempt - try force install
-                print(f"{YELLOW}[!] Trying force install for {package}...{NORMAL}")
-                try:
-                    # Download package
-                    subprocess.run(["apt-get", "download", package], check=False, timeout=60)
-                    
-                    # Find downloaded .deb file
-                    deb_files = [f for f in os.listdir(".") if f.startswith(package) and f.endswith(".deb")]
-                    if deb_files:
-                        # Force install
-                        subprocess.run(["dpkg", "--force-all", "-i", deb_files[0]], check=False)
-                        # Fix dependencies
-                        subprocess.run(["apt-get", "install", "-f", "-y"], check=False)
-                        
-                        # Clean up
-                        for deb_file in deb_files:
-                            os.remove(deb_file)
-                        
-                        print(f"{GREEN}[+] Force installed {package}{NORMAL}")
-                        return True
-                except:
-                    pass
-    
-    print(f"{RED}[!] Failed to install {package} after {max_retries} attempts.{NORMAL}")
-    return False
-
-def install_tools_or_kernel(category, packages, is_kernel, repo_type):
-    """Install selected tools or kernel with dramatic flair."""
-    weapons = ["arsenal", "weaponry", "armaments", "firepower", "ordnance", "toolkit"]
-    power_words = ["Unleashing", "Deploying", "Activating", "Arming", "Initializing", "Loading"]
-    
-    chosen_weapon = random.choice(weapons)
-    power_word = random.choice(power_words)
-    
-    # Handle special cases
-    if category == "All Kali Hacking Tools":
-        install_all_kali_tools()
-        return
-    elif category == "Individual Kali Tools" and not packages:
-        packages = select_specific_tools()
-        if not packages:
-            return
-    
-    # Dramatic intro
-    dramatic_print(f"\n{BOLD}{RED}[*] {power_word} {category} {chosen_weapon}...{NORMAL}", RED, 0.02)
-    
-    try:
-        # Prepare system
-        proactively_remove_rpcbind()
-        create_apt_preferences()
-        
-        # Add repository
-        if not add_repo(repo_type):
-            print(f"{RED}[!] Failed to add {repo_type} repository.{NORMAL}")
-            return
-        
-        # Fix any existing issues
-        fix_dpkg_issues_thoroughly()
-        
-        # Install packages
-        print(f"{CYAN}{BOLD}[*] Installing packages: {', '.join(packages)}{NORMAL}")
-        
-        failed_packages = []
-        successful_packages = []
-        
-        for package in packages:
-            if install_with_retries(package, repo_type=repo_type):
-                successful_packages.append(package)
-            else:
-                failed_packages.append(package)
-        
-        # Report results
-        print(f"\n{BOLD}{BLUE}{'='*50}{NORMAL}")
-        if successful_packages:
-            print(f"{GREEN}{BOLD}[+] Successfully installed:{NORMAL}")
-            for pkg in successful_packages:
-                print(f"    ✓ {pkg}")
-        
-        if failed_packages:
-            print(f"{YELLOW}{BOLD}[!] Failed to install:{NORMAL}")
-            for pkg in failed_packages:
-                print(f"    ✗ {pkg}")
-        else:
-            print(f"{GREEN}{BOLD}[+] All packages installed successfully!{NORMAL}")
-            print(f"{GREEN}[+] Your {category.lower()} is ready for action.{NORMAL}")
-        
-        if is_kernel:
-            print(f"\n{YELLOW}{BOLD}[!] IMPORTANT: Please reboot to activate the new kernel.{NORMAL}")
-            print(f"{CYAN}[*] Run: sudo reboot{NORMAL}")
-    
-    except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Installation interrupted by user.{NORMAL}")
-    except Exception as e:
-        print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
-    finally:
-        # Clean up
-        fix_dpkg_issues_thoroughly()
-        remove_repo(repo_type)
-
-def display_menu():
-    """Display the menu with dramatic styling."""
-    print(f"\n{BOLD}{BLUE}╔{'═'*55}╗{NORMAL}")
-    print(f"{BOLD}{BLUE}║{YELLOW}     KRILIN - SECURITY TOOLS & KERNEL ARSENAL{BLUE}        ║{NORMAL}")
-    print(f"{BOLD}{BLUE}╠{'═'*55}╣{NORMAL}")
-    
-    for key, (category, tools, is_kernel, _) in CATEGORIES.items():
-        # Format category name
-        if is_kernel:
-            icon = "🔧"
-            color = RED if key == "9" else YELLOW
-        elif key == "10":
-            icon = "⚠️"
-            color = MAGENTA
-        else:
-            icon = "📦"
-            color = CYAN
-        
-        # Special warnings
-        if key == "9":
-            warning = f" {RED}(May affect stability){NORMAL}"
-        elif key == "10":
-            warning = f" {MAGENTA}(10+ GB download){NORMAL}"
-        else:
-            warning = ""
-        
-        print(f"{BOLD}{BLUE}║{NORMAL} {BOLD}{color}[{key:2}] {icon} {category:<30}{warning}{BLUE}║{NORMAL}")
-    
-    print(f"{BOLD}{BLUE}║{NORMAL} {BOLD}{YELLOW}[0 ] ❌ Exit{' '*40}{BLUE}║{NORMAL}")
-    print(f"{BOLD}{BLUE}╚{'═'*55}╝{NORMAL}")
-    
-    if os.path.exists("/tmp/krilin_failed_packages.txt"):
-        print(f"\n{YELLOW}[!] Previous failed installations detected.{NORMAL}")
-        print(f"    View with: cat /tmp/krilin_failed_packages.txt")
-
-def check_disk_space():
-    """Check available disk space before installation."""
-    try:
-        stat = os.statvfs('/')
-        free_gb = (stat.f_bavail * stat.f_frsize) / (1024**3)
-        
-        if free_gb < 5:
-            print(f"{RED}{BOLD}[!] WARNING: Only {free_gb:.1f}GB free disk space available.{NORMAL}")
-            print(f"{RED}[!] At least 5GB recommended for tool installation.{NORMAL}")
-            answer = input(f"{YELLOW}[?] Continue anyway? (y/n):{NORMAL} ").lower()
-            if answer != 'y':
-                return False
-    except:
-        pass
-    return True
-
-def main():
-    """Main function to run the Krilin tool."""
-    # Initial checks
-    check_root()
-    
-    # Check and install dependencies
-    check_system_dependencies()
-    check_python_dependencies()
-    
-    # Re-import if they were just installed
-    global REQUESTS_AVAILABLE, BS4_AVAILABLE
-    try:
-        import requests
-        REQUESTS_AVAILABLE = True
-    except:
-        pass
-    try:
-        from bs4 import BeautifulSoup
-        BS4_AVAILABLE = True
-    except:
-        pass
-    
-    # Display banner and system info
-    display_banner()
-    detect_system()
-    
-    # Check disk space
-    if not check_disk_space():
-        print(f"{YELLOW}[!] Exiting due to insufficient disk space.{NORMAL}")
-        sys.exit(1)
-    
-    # Fix any initial issues
-    fix_dpkg_issues_thoroughly()
-    
-    # Proactive rpcbind handling
-    proactively_remove_rpcbind()
-    create_apt_preferences()
-    
-    # Main menu loop
-    while True:
-        display_menu()
-        
-        try:
-            choice = input(f"\n{BOLD}{GREEN}[?] Select an option (0-{len(CATEGORIES)}):{NORMAL} ").strip()
-            
-            if choice == "0":
-                dramatic_print(f"{BOLD}{BLUE}[*] Exiting Krilin. Stay safe, stay ethical!{NORMAL}", BLUE, 0.02)
-                print(f"{GREEN}[*] Thank you for using Krilin Security Framework.{NORMAL}")
-                break
-            elif choice in CATEGORIES:
-                category, packages, is_kernel, repo_type = CATEGORIES[choice]
-                install_tools_or_kernel(category, packages, is_kernel, repo_type)
-            else:
-                print(f"{RED}{BOLD}[!] Invalid option. Please select 0-{len(CATEGORIES)}.{NORMAL}")
-        
-        except KeyboardInterrupt:
-            print(f"\n{YELLOW}{BOLD}[!] Interrupted. Returning to menu...{NORMAL}")
-            continue
-        except EOFError:
-            print(f"\n{YELLOW}{BOLD}[!] Input terminated. Exiting...{NORMAL}")
-            break
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Operation cancelled by user.{NORMAL}")
-        sys.exit(0)
-    except Exception as e:
-        print(f"\n{RED}{BOLD}[!] Fatal error: {e}{NORMAL}")
-        print(f"{YELLOW}[*] Please report this issue at: https://github.com/0xb0rn3/krilin/issues{NORMAL}")
-        sys.exit(1), text) and len(text) > 2:
+                    if re.match(r'^[a-z0-9][a-z0-9\-\.]+, text) and len(text) > 2:
                         tool_packages.append(text)
                 
                 if tool_packages:
                     # Combine with fallback list
                     all_tools = list(set(tool_packages + fallback_tools))
-                    print(f"{GREEN}{BOLD}[+] Found {len(all_tools)} Kali tools.{NORMAL}")
+                    print(f"{GREEN}{BOLD}[+] Arsenal database accessed: {len(all_tools)} weapons available.{NORMAL}")
                     return all_tools
         except Exception as e:
-            print(f"{YELLOW}[!] Could not fetch from website: {e}{NORMAL}")
+            print(f"{YELLOW}[!] Could not access online arsenal database: {e}{NORMAL}")
     
     # Try apt-cache method
     try:
@@ -1071,51 +658,51 @@ if __name__ == "__main__":
             
             if apt_tools:
                 all_tools = list(set(apt_tools + fallback_tools))
-                print(f"{GREEN}{BOLD}[+] Found {len(all_tools)} tools from repository.{NORMAL}")
+                print(f"{GREEN}{BOLD}[+] Arsenal database accessed from repository: {len(all_tools)} weapons.{NORMAL}")
                 return all_tools
     except:
         pass
     
     # Return fallback list
-    print(f"{YELLOW}[!] Using predefined tool list.{NORMAL}")
-    print(f"{GREEN}{BOLD}[+] {len(fallback_tools)} tools available.{NORMAL}")
+    print(f"{YELLOW}[!] Using local arsenal database.{NORMAL}")
+    print(f"{GREEN}{BOLD}[+] {len(fallback_tools)} weapons available for deployment.{NORMAL}")
     return fallback_tools
 
 def install_all_kali_tools():
-    """Install all available Kali tools with a strict warning."""
-    print(f"{MAGENTA}{BOLD}[*] Preparing to install all Kali hacking tools...{NORMAL}")
+    """Deploy all available Kali tools with tactical warning."""
+    print(f"{MAGENTA}{BOLD}[*] Preparing to deploy complete tactical arsenal...{NORMAL}")
     
     tool_packages = fetch_all_kali_tools()
     
     if not tool_packages:
-        print(f"{RED}{BOLD}[!] Could not retrieve the list of Kali tools. Aborting.{NORMAL}")
+        print(f"{RED}{BOLD}[!] Could not retrieve arsenal database. Mission aborted.{NORMAL}")
         return
     
-    print(f"{CYAN}{BOLD}[*] Found {len(tool_packages)} tools to install.{NORMAL}")
+    print(f"{CYAN}{BOLD}[*] Arsenal contains {len(tool_packages)} weapons ready for deployment.{NORMAL}")
     
     # Display warning
     print(f"\n{RED}{BLINK}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}              ⚠️  CRITICAL WARNING ⚠️{NORMAL}")
+    print(f"{RED}{BOLD}              ⚠️  TACTICAL WARNING ⚠️{NORMAL}")
     print(f"{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}Installing ALL Kali tools will:{NORMAL}")
-    print(f"{YELLOW}  • Download and install 10+ GB of software{NORMAL}")
-    print(f"{YELLOW}  • Take several hours to complete{NORMAL}")
+    print(f"{RED}{BOLD}Deploying COMPLETE arsenal will:{NORMAL}")
+    print(f"{YELLOW}  • Download and deploy 10+ GB of tactical software{NORMAL}")
+    print(f"{YELLOW}  • Take several hours to complete deployment{NORMAL}")
     print(f"{YELLOW}  • May cause system instability{NORMAL}")
     print(f"{YELLOW}  • Could create software conflicts{NORMAL}")
     print(f"{YELLOW}  • Consume significant system resources{NORMAL}")
     print(f"{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}STRONGLY RECOMMENDED:{NORMAL} Use option 7 to install")
-    print(f"individual packages instead of everything at once.")
+    print(f"{RED}{BOLD}TACTICAL RECOMMENDATION:{NORMAL} Use option 7 to deploy")
+    print(f"individual weapons instead of complete arsenal.")
     print(f"{RED}{BOLD}{'='*60}{NORMAL}\n")
     
-    confirmation = input(f"{BOLD}{RED}[?] Type 'I UNDERSTAND THE RISKS' to proceed or 'n' to cancel:{NORMAL} ").strip()
+    confirmation = input(f"{BOLD}{RED}[?] Type 'I UNDERSTAND THE RISKS' to proceed or 'n' to cancel mission:{NORMAL} ").strip()
     if confirmation != "I UNDERSTAND THE RISKS":
-        print(f"{YELLOW}{BOLD}[!] Installation cancelled. Good choice!{NORMAL}")
-        print(f"{GREEN}[*] Consider using option 7 to install specific tools.{NORMAL}")
+        print(f"{YELLOW}{BOLD}[!] Deployment cancelled. Tactical decision!{NORMAL}")
+        print(f"{GREEN}[*] Consider using option 7 to deploy specific weapons.{NORMAL}")
         return
     
-    # Ask about batch installation
-    batch_option = input(f"{BOLD}{YELLOW}[?] Install in batches (recommended) or all at once? (b/a):{NORMAL} ").lower()
+    # Ask about batch deployment
+    batch_option = input(f"{BOLD}{YELLOW}[?] Deploy in tactical batches (recommended) or all at once? (b/a):{NORMAL} ").lower()
     
     try:
         # Prepare system
@@ -1131,16 +718,16 @@ def install_all_kali_tools():
         failed_packages = []
         installed_count = 0
         
-        # Install metapackages first
+        # Deploy metapackages first
         if metapackages:
-            print(f"\n{CYAN}{BOLD}[*] Installing Kali metapackages...{NORMAL}")
+            print(f"\n{CYAN}{BOLD}[*] Deploying Kali metapackages...{NORMAL}")
             for meta in metapackages[:5]:  # Limit metapackages to avoid conflicts
                 if install_with_retries(meta, repo_type="kali"):
                     installed_count += 1
                 else:
                     failed_packages.append(meta)
         
-        # Install individual tools
+        # Deploy individual tools
         if batch_option == 'b':
             batch_size = 10
             total_batches = (len(individual_tools) + batch_size - 1) // batch_size
@@ -1149,7 +736,7 @@ def install_all_kali_tools():
                 batch = individual_tools[i:i+batch_size]
                 batch_num = i // batch_size + 1
                 
-                print(f"\n{CYAN}{BOLD}[*] Installing batch {batch_num}/{total_batches}:{NORMAL}")
+                print(f"\n{CYAN}{BOLD}[*] Deploying tactical batch {batch_num}/{total_batches}:{NORMAL}")
                 print(f"    {', '.join(batch)}")
                 
                 for package in batch:
@@ -1160,12 +747,12 @@ def install_all_kali_tools():
                 
                 # Progress update
                 progress = (i + len(batch)) * 100 // len(individual_tools)
-                print(f"{GREEN}[*] Progress: {progress}% complete ({installed_count} tools installed){NORMAL}")
+                print(f"{GREEN}[*] Deployment Progress: {progress}% complete ({installed_count} weapons deployed){NORMAL}")
         else:
-            # Install all at once (not recommended)
-            print(f"\n{CYAN}{BOLD}[*] Installing all tools (this will take a long time)...{NORMAL}")
+            # Deploy all at once (not recommended)
+            print(f"\n{CYAN}{BOLD}[*] Deploying complete arsenal (this will take considerable time)...{NORMAL}")
             for idx, package in enumerate(individual_tools):
-                print(f"{CYAN}[*] Installing {package} ({idx+1}/{len(individual_tools)})...{NORMAL}")
+                print(f"{CYAN}[*] Deploying {package} ({idx+1}/{len(individual_tools)})...{NORMAL}")
                 if install_with_retries(package, repo_type="kali"):
                     installed_count += 1
                 else:
@@ -1173,12 +760,12 @@ def install_all_kali_tools():
         
         # Report results
         print(f"\n{BOLD}{BLUE}{'='*60}{NORMAL}")
-        print(f"{BOLD}{GREEN}Installation Summary:{NORMAL}")
-        print(f"  • Tools installed successfully: {installed_count}")
-        print(f"  • Tools failed: {len(failed_packages)}")
+        print(f"{BOLD}{GREEN}Deployment Summary:{NORMAL}")
+        print(f"  • Weapons deployed successfully: {installed_count}")
+        print(f"  • Weapons failed to deploy: {len(failed_packages)}")
         
         if failed_packages:
-            print(f"\n{YELLOW}{BOLD}[!] The following packages failed to install:{NORMAL}")
+            print(f"\n{YELLOW}{BOLD}[!] The following weapons failed to deploy:{NORMAL}")
             for pkg in failed_packages[:20]:  # Show first 20 failures
                 print(f"    - {pkg}")
             if len(failed_packages) > 20:
@@ -1189,42 +776,42 @@ def install_all_kali_tools():
                 f.write("\n".join(failed_packages))
             print(f"{YELLOW}[*] Complete list saved to /tmp/krilin_failed_packages.txt{NORMAL}")
         else:
-            print(f"{GREEN}{BOLD}[+] All packages successfully installed!{NORMAL}")
-            print(f"{GREEN}[+] Your complete Kali arsenal is ready.{NORMAL}")
+            print(f"{GREEN}{BOLD}[+] Complete arsenal deployed successfully!{NORMAL}")
+            print(f"{GREEN}[+] Your system is now combat ready with full tactical capabilities.{NORMAL}")
     
     except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Installation interrupted by user.{NORMAL}")
+        print(f"\n{YELLOW}{BOLD}[!] Deployment interrupted by operator.{NORMAL}")
     except Exception as e:
-        print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
+        print(f"{RED}{BOLD}[!] Unexpected error during deployment: {e}{NORMAL}")
     finally:
         fix_dpkg_issues_thoroughly()
         remove_repo("kali")
 
 def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
-    """Install a package with retries on failure."""
+    """Deploy a package with tactical retries on failure."""
     for attempt in range(1, max_retries + 1):
         try:
-            # Skip if already installed
+            # Skip if already deployed
             check_cmd = ["dpkg", "-l", package]
             result = subprocess.run(check_cmd, capture_output=True, text=True, check=False)
             if "ii  " + package in result.stdout:
-                print(f"{GREEN}[+] {package} is already installed{NORMAL}")
+                print(f"{GREEN}[+] {package} already deployed{NORMAL}")
                 return True
             
-            print(f"{CYAN}[*] Installing {package} (attempt {attempt}/{max_retries})...{NORMAL}")
+            print(f"{CYAN}[*] Deploying {package} (attempt {attempt}/{max_retries})...{NORMAL}")
             
-            # Build install command
+            # Build deploy command
             if repo_type == "backports":
                 codename = get_debian_codename()
                 cmd = ['apt-get', 'install', '-y', '-qq', '-t', f"{codename}-backports", package]
             else:
                 cmd = ['apt-get', 'install', '-y', '-qq', '--no-install-recommends', package]
             
-            # Try installation
+            # Try deployment
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
             
             if result.returncode == 0:
-                print(f"{GREEN}[+] Successfully installed {package}{NORMAL}")
+                print(f"{GREEN}[+] Successfully deployed {package}{NORMAL}")
                 return True
             else:
                 raise subprocess.CalledProcessError(result.returncode, cmd)
@@ -1237,8 +824,8 @@ def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
                 fix_dpkg_issues_thoroughly()
                 time.sleep(2)
             else:
-                # Last attempt - try force install
-                print(f"{YELLOW}[!] Trying force install for {package}...{NORMAL}")
+                # Last attempt - try force deploy
+                print(f"{YELLOW}[!] Attempting force deployment for {package}...{NORMAL}")
                 try:
                     # Download package
                     subprocess.run(["apt-get", "download", package], check=False, timeout=60)
@@ -1246,7 +833,7 @@ def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
                     # Find downloaded .deb file
                     deb_files = [f for f in os.listdir(".") if f.startswith(package) and f.endswith(".deb")]
                     if deb_files:
-                        # Force install
+                        # Force deploy
                         subprocess.run(["dpkg", "--force-all", "-i", deb_files[0]], check=False)
                         # Fix dependencies
                         subprocess.run(["apt-get", "install", "-f", "-y"], check=False)
@@ -1255,18 +842,18 @@ def install_with_retries(package, repo_type=None, max_retries=3, timeout=300):
                         for deb_file in deb_files:
                             os.remove(deb_file)
                         
-                        print(f"{GREEN}[+] Force installed {package}{NORMAL}")
+                        print(f"{GREEN}[+] Force deployed {package}{NORMAL}")
                         return True
                 except:
                     pass
     
-    print(f"{RED}[!] Failed to install {package} after {max_retries} attempts.{NORMAL}")
+    print(f"{RED}[!] Failed to deploy {package} after {max_retries} attempts.{NORMAL}")
     return False
 
 def install_tools_or_kernel(category, packages, is_kernel, repo_type):
-    """Install selected tools or kernel with dramatic flair."""
+    """Deploy selected tools or kernel with tactical precision."""
     weapons = ["arsenal", "weaponry", "armaments", "firepower", "ordnance", "toolkit"]
-    power_words = ["Unleashing", "Deploying", "Activating", "Arming", "Initializing", "Loading"]
+    power_words = ["Deploying", "Activating", "Arming", "Initializing", "Loading", "Engaging"]
     
     chosen_weapon = random.choice(weapons)
     power_word = random.choice(power_words)
@@ -1280,8 +867,8 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
         if not packages:
             return
     
-    # Dramatic intro
-    dramatic_print(f"\n{BOLD}{RED}[*] {power_word} {category} {chosen_weapon}...{NORMAL}", RED, 0.02)
+    # Tactical intro
+    tactical_print(f"\n{BOLD}{RED}[*] {power_word} {category} {chosen_weapon}...{NORMAL}", RED, 0.02)
     
     try:
         # Prepare system
@@ -1290,14 +877,14 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
         
         # Add repository
         if not add_repo(repo_type):
-            print(f"{RED}[!] Failed to add {repo_type} repository.{NORMAL}")
+            print(f"{RED}[!] Failed to deploy {repo_type} repository.{NORMAL}")
             return
         
         # Fix any existing issues
         fix_dpkg_issues_thoroughly()
         
-        # Install packages
-        print(f"{CYAN}{BOLD}[*] Installing packages: {', '.join(packages)}{NORMAL}")
+        # Deploy packages
+        print(f"{CYAN}{BOLD}[*] Deploying packages: {', '.join(packages)}{NORMAL}")
         
         failed_packages = []
         successful_packages = []
@@ -1311,35 +898,35 @@ def install_tools_or_kernel(category, packages, is_kernel, repo_type):
         # Report results
         print(f"\n{BOLD}{BLUE}{'='*50}{NORMAL}")
         if successful_packages:
-            print(f"{GREEN}{BOLD}[+] Successfully installed:{NORMAL}")
+            print(f"{GREEN}{BOLD}[+] Successfully deployed:{NORMAL}")
             for pkg in successful_packages:
                 print(f"    ✓ {pkg}")
         
         if failed_packages:
-            print(f"{YELLOW}{BOLD}[!] Failed to install:{NORMAL}")
+            print(f"{YELLOW}{BOLD}[!] Failed to deploy:{NORMAL}")
             for pkg in failed_packages:
                 print(f"    ✗ {pkg}")
         else:
-            print(f"{GREEN}{BOLD}[+] All packages installed successfully!{NORMAL}")
-            print(f"{GREEN}[+] Your {category.lower()} is ready for action.{NORMAL}")
+            print(f"{GREEN}{BOLD}[+] All packages deployed successfully!{NORMAL}")
+            print(f"{GREEN}[+] Your {category.lower()} is now combat ready.{NORMAL}")
         
         if is_kernel:
-            print(f"\n{YELLOW}{BOLD}[!] IMPORTANT: Please reboot to activate the new kernel.{NORMAL}")
-            print(f"{CYAN}[*] Run: sudo reboot{NORMAL}")
+            print(f"\n{YELLOW}{BOLD}[!] TACTICAL ALERT: Reboot required to activate new kernel.{NORMAL}")
+            print(f"{CYAN}[*] Execute: sudo reboot{NORMAL}")
     
     except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Installation interrupted by user.{NORMAL}")
+        print(f"\n{YELLOW}{BOLD}[!] Deployment interrupted by operator.{NORMAL}")
     except Exception as e:
-        print(f"{RED}{BOLD}[!] Unexpected error: {e}{NORMAL}")
+        print(f"{RED}{BOLD}[!] Unexpected error during deployment: {e}{NORMAL}")
     finally:
         # Clean up
         fix_dpkg_issues_thoroughly()
         remove_repo(repo_type)
 
 def display_menu():
-    """Display the menu with dramatic styling."""
+    """Display the tactical command menu."""
     print(f"\n{BOLD}{BLUE}╔{'═'*55}╗{NORMAL}")
-    print(f"{BOLD}{BLUE}║{YELLOW}     KRILIN - SECURITY TOOLS & KERNEL ARSENAL{BLUE}        ║{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW}     KRILIN - TACTICAL SECURITY COMMAND CENTER{BLUE}        ║{NORMAL}")
     print(f"{BOLD}{BLUE}╠{'═'*55}╣{NORMAL}")
     
     for key, (category, tools, is_kernel, _) in CATEGORIES.items():
@@ -1356,31 +943,31 @@ def display_menu():
         
         # Special warnings
         if key == "9":
-            warning = f" {RED}(May affect stability){NORMAL}"
+            warning = f" {RED}(May affect system stability){NORMAL}"
         elif key == "10":
-            warning = f" {MAGENTA}(10+ GB download){NORMAL}"
+            warning = f" {MAGENTA}(10+ GB deployment){NORMAL}"
         else:
             warning = ""
         
         print(f"{BOLD}{BLUE}║{NORMAL} {BOLD}{color}[{key:2}] {icon} {category:<30}{warning}{BLUE}║{NORMAL}")
     
-    print(f"{BOLD}{BLUE}║{NORMAL} {BOLD}{YELLOW}[0 ] ❌ Exit{' '*40}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}║{NORMAL} {BOLD}{YELLOW}[0 ] ⌛ Exit Mission{' '*34}{BLUE}║{NORMAL}")
     print(f"{BOLD}{BLUE}╚{'═'*55}╝{NORMAL}")
     
     if os.path.exists("/tmp/krilin_failed_packages.txt"):
-        print(f"\n{YELLOW}[!] Previous failed installations detected.{NORMAL}")
-        print(f"    View with: cat /tmp/krilin_failed_packages.txt")
+        print(f"\n{YELLOW}[!] Previous failed deployments detected.{NORMAL}")
+        print(f"    Access with: cat /tmp/krilin_failed_packages.txt")
 
 def check_disk_space():
-    """Check available disk space before installation."""
+    """Check available ammunition storage before deployment."""
     try:
         stat = os.statvfs('/')
         free_gb = (stat.f_bavail * stat.f_frsize) / (1024**3)
         
         if free_gb < 5:
-            print(f"{RED}{BOLD}[!] WARNING: Only {free_gb:.1f}GB free disk space available.{NORMAL}")
-            print(f"{RED}[!] At least 5GB recommended for tool installation.{NORMAL}")
-            answer = input(f"{YELLOW}[?] Continue anyway? (y/n):{NORMAL} ").lower()
+            print(f"{RED}{BOLD}[!] WARNING: Only {free_gb:.1f}GB ammunition storage available.{NORMAL}")
+            print(f"{RED}[!] At least 5GB recommended for tactical deployments.{NORMAL}")
+            answer = input(f"{YELLOW}[?] Continue deployment anyway? (y/n):{NORMAL} ").lower()
             if answer != 'y':
                 return False
     except:
@@ -1388,7 +975,7 @@ def check_disk_space():
     return True
 
 def main():
-    """Main function to run the Krilin tool."""
+    """Main function to run the Krilin tactical framework."""
     # Initial checks
     check_root()
     
@@ -1396,7 +983,7 @@ def main():
     check_system_dependencies()
     check_python_dependencies()
     
-    # Re-import if they were just installed
+    # Re-import if they were just deployed
     global REQUESTS_AVAILABLE, BS4_AVAILABLE
     try:
         import requests
@@ -1413,9 +1000,9 @@ def main():
     display_banner()
     detect_system()
     
-    # Check disk space
+    # Check ammunition storage
     if not check_disk_space():
-        print(f"{YELLOW}[!] Exiting due to insufficient disk space.{NORMAL}")
+        print(f"{YELLOW}[!] Mission aborted due to insufficient ammunition storage.{NORMAL}")
         sys.exit(1)
     
     # Fix any initial issues
@@ -1425,37 +1012,37 @@ def main():
     proactively_remove_rpcbind()
     create_apt_preferences()
     
-    # Main menu loop
+    # Main command loop
     while True:
         display_menu()
         
         try:
-            choice = input(f"\n{BOLD}{GREEN}[?] Select an option (0-{len(CATEGORIES)}):{NORMAL} ").strip()
+            choice = input(f"\n{BOLD}{GREEN}[?] Select tactical option (0-{len(CATEGORIES)}):{NORMAL} ").strip()
             
             if choice == "0":
-                dramatic_print(f"{BOLD}{BLUE}[*] Exiting Krilin. Stay safe, stay ethical!{NORMAL}", BLUE, 0.02)
-                print(f"{GREEN}[*] Thank you for using Krilin Security Framework.{NORMAL}")
+                tactical_print(f"{BOLD}{BLUE}[*] Mission complete. System secure, stay tactical!{NORMAL}", BLUE, 0.02)
+                print(f"{GREEN}[*] Thank you for using Krilin Tactical Security Framework.{NORMAL}")
                 break
             elif choice in CATEGORIES:
                 category, packages, is_kernel, repo_type = CATEGORIES[choice]
                 install_tools_or_kernel(category, packages, is_kernel, repo_type)
             else:
-                print(f"{RED}{BOLD}[!] Invalid option. Please select 0-{len(CATEGORIES)}.{NORMAL}")
+                print(f"{RED}{BOLD}[!] Invalid tactical option. Please select 0-{len(CATEGORIES)}.{NORMAL}")
         
         except KeyboardInterrupt:
-            print(f"\n{YELLOW}{BOLD}[!] Interrupted. Returning to menu...{NORMAL}")
+            print(f"\n{YELLOW}{BOLD}[!] Interrupted. Returning to command center...{NORMAL}")
             continue
         except EOFError:
-            print(f"\n{YELLOW}{BOLD}[!] Input terminated. Exiting...{NORMAL}")
+            print(f"\n{YELLOW}{BOLD}[!] Input terminated. Mission abort...{NORMAL}")
             break
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print(f"\n{YELLOW}{BOLD}[!] Operation cancelled by user.{NORMAL}")
+        print(f"\n{YELLOW}{BOLD}[!] Mission cancelled by operator.{NORMAL}")
         sys.exit(0)
     except Exception as e:
-        print(f"\n{RED}{BOLD}[!] Fatal error: {e}{NORMAL}")
+        print(f"\n{RED}{BOLD}[!] Critical system error: {e}{NORMAL}")
         print(f"{YELLOW}[*] Please report this issue at: https://github.com/0xb0rn3/krilin/issues{NORMAL}")
         sys.exit(1)
