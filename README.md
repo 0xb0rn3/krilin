@@ -133,6 +133,7 @@ cd krilin
 
 ### **Step 2: Run the Installer**
 ```bash
+chmod +x run
 sudo ./run
 ```
 
