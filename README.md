@@ -365,7 +365,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔒 **Security**
 
-Found a security vulnerability? Please email security@krilin.dev or open a [security advisory](https://github.com/0xb0rn3/krilin/security/advisories).
+Found a security vulnerability? Please email q4n0@proton.me or open a [security advisory](https://github.com/0xb0rn3/krilin/security/advisories).
 
 ## 📈 **Project Stats**
 
