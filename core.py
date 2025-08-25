@@ -631,7 +631,7 @@ def fetch_all_kali_tools():
                 for element in tools_sections:
                     text = element.get_text().strip()
                     # Look for package-like names
-                    if re.match(r'^[a-z0-9][a-z0-9\-\.]+, text) and len(text) > 2:
+                    if re.match(r'^[a-z0-9][a-z0-9\-\.]+$', text) and len(text) > 2:
                         tool_packages.append(text)
                 
                 if tool_packages:
