@@ -23,7 +23,6 @@ NORMAL = '\033[0m'
 
 KALI_REPO = "deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware"
 
-
 LOG_FILE = "/var/log/krilin_operations.log"
 
 KALI_CATEGORIES = {
@@ -295,11 +294,11 @@ def fetch_all_kali_tools():
 
 def install_all_kali_tools():
     print(f"\n{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{RED}{BOLD}              âš ï¸  WARNING âš ï¸{NORMAL}")
+    print(f"{RED}{BOLD}              WARNING{NORMAL}")
     print(f"{RED}{BOLD}{'='*60}{NORMAL}")
-    print(f"{YELLOW}  â€¢ 10+ GB download size{NORMAL}")
-    print(f"{YELLOW}  â€¢ Several hours installation time{NORMAL}")
-    print(f"{YELLOW}  â€¢ May cause system conflicts{NORMAL}")
+    print(f"{YELLOW}  * 10+ GB download size{NORMAL}")
+    print(f"{YELLOW}  * Several hours installation time{NORMAL}")
+    print(f"{YELLOW}  * May cause system conflicts{NORMAL}")
     print(f"{RED}{BOLD}{'='*60}{NORMAL}\n")
     
     confirm = input(f"{RED}Type 'I ACCEPT' to continue: {NORMAL}").strip()
@@ -361,38 +360,40 @@ def install_parrot_edition(edition, packages):
         pass
 
 def display_main_menu():
-    print(f"\n{BOLD}{BLUE}â•"{'â•'*55}â•—{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{CYAN}     KRILIN SECURITY FRAMEWORK - MAIN MENU{BLUE}      â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â• {'â•'*55}â•£{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{YELLOW} [1] ðŸ"¦ Kali Linux Tools{' '*33}{BLUE}â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{YELLOW} [2] ðŸ¦œ Parrot Security Conversion{' '*24}{BLUE}â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{YELLOW} [0] âŒ› Exit{' '*45}{BLUE}â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â•š{'â•'*55}â•{NORMAL}")
+    print(f"\n{BOLD}{BLUE}╔{'═'*55}╗{NORMAL}")
+    print(f"{BOLD}{BLUE}║{CYAN}     KRILIN SECURITY FRAMEWORK - MAIN MENU{BLUE}      ║{NORMAL}")
+    print(f"{BOLD}{BLUE}╠{'═'*55}╣{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW} [1] Kali Linux Tools{' '*33}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW} [2] Parrot Security Conversion{' '*24}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW} [0] Exit{' '*45}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}╚{'═'*55}╝{NORMAL}")
 
 def display_kali_menu():
-    print(f"\n{BOLD}{BLUE}â•"{'â•'*55}â•—{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{CYAN}     KALI LINUX TOOLS INSTALLATION{BLUE}              â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â• {'â•'*55}â•£{NORMAL}")
+    print(f"\n{BOLD}{BLUE}╔{'═'*55}╗{NORMAL}")
+    print(f"{BOLD}{BLUE}║{CYAN}     KALI LINUX TOOLS INSTALLATION{BLUE}              ║{NORMAL}")
+    print(f"{BOLD}{BLUE}╠{'═'*55}╣{NORMAL}")
     
     for key, (category, _) in KALI_CATEGORIES.items():
-        icon = "âš ï¸" if key == "8" else "ðŸ"¦"
+        icon = "[!]" if key == "8" else "[*]"
         warning = f" {MAGENTA}(10+ GB){NORMAL}" if key == "8" else ""
-        print(f"{BOLD}{BLUE}â•'{CYAN} [{key}] {icon} {category:<40}{warning}{BLUE}â•'{NORMAL}")
+        padding = ' ' * (40 - len(category))
+        print(f"{BOLD}{BLUE}║{CYAN} [{key}] {icon} {category}{padding}{warning}{BLUE}║{NORMAL}")
     
-    print(f"{BOLD}{BLUE}â•'{YELLOW} [0] â†© Back{' '*45}{BLUE}â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â•š{'â•'*55}â•{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW} [0] Back{' '*45}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}╚{'═'*55}╝{NORMAL}")
 
 def display_parrot_menu():
-    print(f"\n{BOLD}{BLUE}â•"{'â•'*55}â•—{NORMAL}")
-    print(f"{BOLD}{BLUE}â•'{CYAN}     PARROT SECURITY CONVERSION{BLUE}                 â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â• {'â•'*55}â•£{NORMAL}")
+    print(f"\n{BOLD}{BLUE}╔{'═'*55}╗{NORMAL}")
+    print(f"{BOLD}{BLUE}║{CYAN}     PARROT SECURITY CONVERSION{BLUE}                 ║{NORMAL}")
+    print(f"{BOLD}{BLUE}╠{'═'*55}╣{NORMAL}")
     
     for key, (edition, _) in PARROT_EDITIONS.items():
-        icon = "ðŸ–¥ï¸" if "Core" in edition else "ðŸ¦œ"
-        print(f"{BOLD}{BLUE}â•'{CYAN} [{key}] {icon} {edition:<42}{BLUE}â•'{NORMAL}")
+        icon = "[>]" if "Core" in edition else "[*]"
+        padding = ' ' * (42 - len(edition))
+        print(f"{BOLD}{BLUE}║{CYAN} [{key}] {icon} {edition}{padding}{BLUE}║{NORMAL}")
     
-    print(f"{BOLD}{BLUE}â•'{YELLOW} [0] â†© Back{' '*45}{BLUE}â•'{NORMAL}")
-    print(f"{BOLD}{BLUE}â•š{'â•'*55}â•{NORMAL}")
+    print(f"{BOLD}{BLUE}║{YELLOW} [0] Back{' '*45}{BLUE}║{NORMAL}")
+    print(f"{BOLD}{BLUE}╚{'═'*55}╝{NORMAL}")
 
 def main():
     check_root()
