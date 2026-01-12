@@ -30,15 +30,17 @@ is_docker() {
 
 print_banner() {
     clear
-    echo -e "${C_BLUE}â•"â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}  â–ˆâ–ˆâ•—  â–ˆâ–ˆâ•—${C_RED}â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— ${C_YELLOW}â–ˆâ–ˆâ•—${C_GREEN}â–ˆâ–ˆâ•—     ${C_BLUE}â–ˆâ–ˆâ•—${C_MAGENTA}â–ˆâ–ˆâ–ˆâ•—   â–ˆâ–ˆâ•—${C_BLUE}  â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}  â–ˆâ–ˆâ•'  â–ˆâ–ˆâ•'${C_RED}â–ˆâ–ˆâ•"â•â•â•â•â• ${C_YELLOW}â–ˆâ–ˆâ•'${C_GREEN}â–ˆâ–ˆâ•'     ${C_BLUE}â–ˆâ–ˆâ•'${C_MAGENTA}â–ˆâ–ˆâ–ˆâ–ˆâ•—  â–ˆâ–ˆâ•'${C_BLUE}  â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•'${C_RED}â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—${C_YELLOW}â–ˆâ–ˆâ•'${C_GREEN}â–ˆâ–ˆâ•'     ${C_BLUE}â–ˆâ–ˆâ•'${C_MAGENTA}â–ˆâ–ˆâ•"â–ˆâ–ˆâ•— â–ˆâ–ˆâ•'${C_BLUE}  â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}  â–ˆâ–ˆâ•"â•â•â•â–ˆâ–ˆâ•'${C_RED}â–ˆâ–ˆâ•"â•â•â•â•â• ${C_YELLOW}â–ˆâ–ˆâ•'${C_GREEN}â–ˆâ–ˆâ•'     ${C_BLUE}â–ˆâ–ˆâ•'${C_MAGENTA}â–ˆâ–ˆâ•'â•šâ–ˆâ–ˆâ–ˆâ–ˆâ•'${C_BLUE}  â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}  â–ˆâ–ˆâ•'  â–ˆâ–ˆâ•'${C_RED}â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—${C_YELLOW}â–ˆâ–ˆâ•'${C_GREEN}â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—${C_BLUE}â–ˆâ–ˆâ•'${C_MAGENTA}â–ˆâ–ˆâ•' â•šâ–ˆâ–ˆâ–ˆâ•'${C_BLUE}  â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_GREEN}  Security Framework v0.3${C_BLUE}                     â•'${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_MAGENTA}  0xbv1(0xb0rn3) | IG: theehiv3${C_BLUE}             â•'${C_RESET}"
-    echo -e "${C_BLUE}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${C_RESET}"
+    echo -e "${C_BLUE}╔══════════════════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  ██╗  ██╗${C_RED}██████╗ ${C_YELLOW}██╗${C_GREEN}██╗     ${C_BLUE}██╗${C_MAGENTA}███╗   ██╗${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  ██║ ██╔╝${C_RED}██╔══██╗${C_YELLOW}██║${C_GREEN}██║     ${C_BLUE}██║${C_MAGENTA}████╗  ██║${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  █████╔╝ ${C_RED}██████╔╝${C_YELLOW}██║${C_GREEN}██║     ${C_BLUE}██║${C_MAGENTA}██╔██╗ ██║${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  ██╔═██╗ ${C_RED}██╔══██╗${C_YELLOW}██║${C_GREEN}██║     ${C_BLUE}██║${C_MAGENTA}██║╚██╗██║${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  ██║  ██╗${C_RED}██║  ██║${C_YELLOW}██║${C_GREEN}███████╗${C_BLUE}██║${C_MAGENTA}██║ ╚████║${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}  ╚═╝  ╚═╝${C_RED}╚═╝  ╚═╝${C_YELLOW}╚═╝${C_GREEN}╚══════╝${C_BLUE}╚═╝${C_MAGENTA}╚═╝  ╚═══╝${C_RESET}                ║${C_RESET}"
+    echo -e "${C_BLUE}║                                                              ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_GREEN}  Security Framework v0.3${C_RESET}                                  ║${C_RESET}"
+    echo -e "${C_BLUE}║${C_MAGENTA}  0xbv1(0xb0rn3) | IG: theehiv3${C_RESET}                          ║${C_RESET}"
+    echo -e "${C_BLUE}╚══════════════════════════════════════════════════════════════╝${C_RESET}"
     
     if is_docker; then
         echo -e "${C_YELLOW}[DOCKER MODE]${C_RESET}"
@@ -125,9 +127,9 @@ main() {
     
     chmod +x core.py
     
-    echo -e "${C_BLUE}â•"â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${C_RESET}"
-    echo -e "${C_BLUE}â•'${C_CYAN}          LAUNCHING KRILIN CORE${C_BLUE}           â•'${C_RESET}"
-    echo -e "${C_BLUE}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${C_RESET}"
+    echo -e "${C_BLUE}╔═══════════════════════════════════════════════════╗${C_RESET}"
+    echo -e "${C_BLUE}║${C_CYAN}          LAUNCHING KRILIN CORE${C_BLUE}           ║${C_RESET}"
+    echo -e "${C_BLUE}╚═══════════════════════════════════════════════════╝${C_RESET}"
     echo
     
     python3 core.py "$@"
