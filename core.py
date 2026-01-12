@@ -61,11 +61,28 @@ def log_warn(msg):
 def log_err(msg):
     print(f"{RED}[-]{NORMAL} {msg}")
 
-def run_cmd(cmd, silent=False):
+def run_cmd(cmd, silent=False, show_progress=False):
     try:
-        if silent:
+        if silent and not show_progress:
             subprocess.run(cmd, shell=True, check=True, 
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        elif show_progress:
+            process = subprocess.Popen(
+                cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                bufsize=1
+            )
+            
+            for line in process.stdout:
+                if any(keyword in line.lower() for keyword in ['unpacking', 'setting up', 'processing', 'installing']):
+                    print(f"{CYAN}  >{NORMAL} {line.strip()}")
+            
+            process.wait()
+            if process.returncode != 0:
+                return False
         else:
             subprocess.run(cmd, shell=True, check=True)
         return True
@@ -207,7 +224,7 @@ def remove_repo(repo_type):
     run_cmd("apt-get update", silent=True)
     log_ok("Repository removed")
 
-def install_package(package, max_retries=3):
+def install_package(package, max_retries=3, show_progress=False):
     for attempt in range(1, max_retries + 1):
         result = subprocess.run(
             ["dpkg", "-l", package],
@@ -216,13 +233,16 @@ def install_package(package, max_retries=3):
         )
         
         if f"ii  {package}" in result.stdout:
-            log_ok(f"{package} already installed")
+            if show_progress:
+                log_ok(f"{package} already installed")
             return True
         
-        log(f"Installing {package} (attempt {attempt}/{max_retries})...")
+        if show_progress:
+            log(f"Installing {package} (attempt {attempt}/{max_retries})...")
         
-        if run_cmd(f"apt-get install -y -qq --no-install-recommends {package}", silent=True):
-            log_ok(f"{package} installed")
+        if run_cmd(f"apt-get install -y -qq --no-install-recommends {package}", silent=not show_progress, show_progress=show_progress):
+            if show_progress:
+                log_ok(f"{package} installed")
             return True
         
         if attempt < max_retries:
@@ -232,12 +252,16 @@ def install_package(package, max_retries=3):
     log_err(f"Failed to install {package}")
     return False
 
-def install_packages(packages):
+def install_packages(packages, show_progress=False):
     failed = []
     success = []
+    total = len(packages)
     
-    for pkg in packages:
-        if install_package(pkg):
+    for idx, pkg in enumerate(packages, 1):
+        if show_progress:
+            print(f"\n{BOLD}{CYAN}[{idx}/{total}]{NORMAL} Processing: {YELLOW}{pkg}{NORMAL}")
+        
+        if install_package(pkg, show_progress=show_progress):
             success.append(pkg)
         else:
             failed.append(pkg)
@@ -341,18 +365,40 @@ def install_parrot_edition(edition, packages):
         log_warn("Desktop environment in Docker may have limited functionality")
     
     try:
+        # Show initial progress
+        print(f"\n{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{CYAN}Phase 1/4: Adding Parrot repositories...{NORMAL}")
+        print(f"{BOLD}{CYAN}{'='*60}{NORMAL}")
         add_parrot_repo()
+        
+        print(f"\n{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{CYAN}Phase 2/4: Fixing package system...{NORMAL}")
+        print(f"{BOLD}{CYAN}{'='*60}{NORMAL}")
         fix_dpkg()
         
-        run_cmd("apt-get update", silent=True)
-        run_cmd("apt-get upgrade -y", silent=True)
+        print(f"\n{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{CYAN}Phase 3/4: Updating system packages...{NORMAL}")
+        print(f"{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{YELLOW}This may take several minutes...{NORMAL}\n")
+        run_cmd("apt-get update", silent=False, show_progress=True)
+        
+        print(f"\n{YELLOW}Upgrading system packages...{NORMAL}\n")
+        run_cmd("apt-get upgrade -y", silent=False, show_progress=True)
         
         if os.uname().machine == "aarch64":
             run_cmd("apt-mark hold broadcom-sta-dkms", silent=True)
         
-        install_packages(packages)
+        print(f"\n{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{CYAN}Phase 4/4: Installing Parrot {edition} packages...{NORMAL}")
+        print(f"{BOLD}{CYAN}{'='*60}{NORMAL}")
+        print(f"{YELLOW}Total packages to install: {len(packages)}{NORMAL}")
+        print(f"{YELLOW}This will take significant time. Please be patient...{NORMAL}\n")
         
-        log_ok(f"Parrot {edition} installation complete")
+        install_packages(packages, show_progress=True)
+        
+        print(f"\n{BOLD}{GREEN}{'='*60}{NORMAL}")
+        log_ok(f"Parrot {edition} installation complete!")
+        print(f"{BOLD}{GREEN}{'='*60}{NORMAL}")
         
         if "Home" in edition or "Security" in edition or "HTB" in edition:
             log_warn("Reboot required for desktop environment")
